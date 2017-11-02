@@ -3,6 +3,7 @@ package group10.tcss450.uw.edu.bookingbuddy;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,6 +44,7 @@ public class registerScreen extends Fragment implements View.OnClickListener {
     private EditText registerComfirmPasword;
     private Button registerButton;
 
+    private FirebaseAuth mAuth;
     public registerScreen() {
         // Required empty public constructor
     }
@@ -68,8 +77,7 @@ public class registerScreen extends Fragment implements View.OnClickListener {
         registerPassword = (EditText) v.findViewById(R.id.registerPassword);
         registerButton  = (Button) v.findViewById(R.id.registerButton);
         registerButton.setOnClickListener(this);
-
-
+        mAuth = FirebaseAuth.getInstance();
 
         return v;
     }
@@ -146,8 +154,47 @@ public class registerScreen extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
+            Log.d("result", result);
             if (result.equals("User Created")) {
+
+                mAuth.createUserWithEmailAndPassword(registerUsername.getText().toString(), registerPassword.getText().toString());
+                FirebaseUser user = null;
+                mAuth.signInWithEmailAndPassword(registerUsername.getText().toString(), registerPassword.getText().toString())
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("SUCCESS", "signInWithEmail:success");
+                                    FirebaseUser user = mAuth.getInstance().getCurrentUser();
+                                    user.sendEmailVerification().addOnCompleteListener(getActivity(), new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task task) {
+
+                                            if (task.isSuccessful()) {
+                                                Log.d("SUCESS", "EMAIL VERIFICATION");
+
+                                            } else {
+                                                Log.e("NOPE", "sendEmailVerification", task.getException());
+
+                                            }
+                                        }
+                                    });
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w("PROBLEM", "signInWithEmail:failure", task.getException());
+
+                                }
+
+                                // ...
+                            }
+                        });
+
+
+
                 mListener.registerFragmentInteraction("PHP MESSAGE", result);
+
             }
             if (result.equals("username already in database")){
                 registerUsername.setError("Username already registered");

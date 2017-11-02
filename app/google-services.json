@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "864329666836",
+    "firebase_url": "https://bookingbuddy-8c4d6.firebaseio.com",
+    "project_id": "bookingbuddy-8c4d6",
+    "storage_bucket": "bookingbuddy-8c4d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864329666836:android:c384af6fbd313b99",
+        "android_client_info": {
+          "package_name": "group10.tcss450.uw.edu.bookingbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864329666836-vs9vfd40gmel6rar67hh0svk3eh3mghc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAse0IXCgFwBG9Ww5eZsu3NjoaP3IoTaC4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

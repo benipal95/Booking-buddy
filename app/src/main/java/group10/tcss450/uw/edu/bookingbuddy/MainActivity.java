@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class MainActivity extends AppCompatActivity implements splashScreen.splashFragmentInteractionListener, loginScreen.loginFragmentInteractionListener,
         registerScreen.registerFragmentInteractionListener, displayScreen.OnFragmentInteractionListener{

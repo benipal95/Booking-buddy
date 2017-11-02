@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +34,7 @@ public class loginScreen extends Fragment implements View.OnClickListener{
     private EditText loginPassword;
 
     private Button loginButton;
-
+    private FirebaseAuth mAuth;
     public loginScreen() {
         // Required empty public constructor
     }
@@ -40,6 +42,8 @@ public class loginScreen extends Fragment implements View.OnClickListener{
 
     @Override
     public void onStart() {
+
+        mAuth = FirebaseAuth.getInstance();
         super.onStart();
     }
 
