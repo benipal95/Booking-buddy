@@ -3,6 +3,7 @@ package group10.tcss450.uw.edu.bookingbuddy;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -141,12 +146,32 @@ public class loginScreen extends Fragment implements View.OnClickListener{
                 loginUsername.setError("Unable to login");
 
             }
-            Log.d(result,"result");
+
             if(result.equals("found")) {
-                mListener.loginFragmentInteraction("PHP MESSAGE", result);
+                mAuth.signInWithEmailAndPassword(loginUsername.getText().toString(), loginPassword.getText().toString())
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("SUCCESS", "signInWithEmail:success");
+                                    FirebaseUser user = mAuth.getInstance().getCurrentUser();
+                                    mListener.loginFragmentInteraction("PHP MESSAGE", "LOGIN SUCCESSFUL");
+
+
+                                    // ...
+                                } else {
+                                    Log.d("FAILURE", "signinWithEmail");
+                                }
+                            }
+                        });
+
+
+                 }
+
             }
 
 
         }
     }
-}
+
