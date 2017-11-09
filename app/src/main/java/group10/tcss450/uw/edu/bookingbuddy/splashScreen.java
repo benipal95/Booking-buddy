@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;import group10.tcss450.uw.edu.bookingbuddy.R;
+import android.widget.Button;
 
 
 /**

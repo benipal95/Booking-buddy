@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;import group10.tcss450.uw.edu.bookingbuddy.R;
+import java.net.URLEncoder;
 
 
 /**
@@ -49,19 +49,23 @@ public class registerScreen extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
+
     @Override
     public void onClick(View v) {
         if (mListener != null) {
             AsyncTask<String, Void, String> task = null;
-            if(registerUsername.getText().toString() != null) {
+            String emailAddress = registerUsername.getText().toString();
+            if(android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
 
                 if(registerPassword.getText().toString().equals(registerComfirmPasword.getText().toString())) {
                     task = new PostWebServiceTask();
-                    task.execute(PARTIAL_URL, registerUsername.getText().toString(), registerPassword.getText().toString());
+                    task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
 
                 } else {
                     registerPassword.setError("Passwords Not Matching");
                 }
+            } else {
+                registerUsername.setError("Must be a valid email.");
             }
 
         }
@@ -114,6 +118,9 @@ public class registerScreen extends Fragment implements View.OnClickListener {
         // TODO: Update argument type and name
         void registerFragmentInteraction(String username, String password);
     }
+
+
+
     private class PostWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "insertnew.php";
         @Override
@@ -130,9 +137,9 @@ public class registerScreen extends Fragment implements View.OnClickListener {
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                String data =URLEncoder.encode("first_name", "UTF-8")
-                        + "=" + URLEncoder.encode(strings[1], "UTF-8") +"&" +URLEncoder.encode("user_pass","UTF-8") + "="
-                        + URLEncoder.encode(strings[2], "UTF-8");
+                String data = URLEncoder.encode("first_name", "UTF-8")
+                        + "=" + URLEncoder.encode(strings[1], "UTF-8") +"&" + URLEncoder.encode("user_pass","UTF-8") + "="
+                        + URLEncoder.encode(strings[2], "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=0";
                 Log.d(data, "DATA ");
                 wr.write(data);
                 wr.flush();
@@ -151,10 +158,11 @@ public class registerScreen extends Fragment implements View.OnClickListener {
             }
             return response;
         }
+
+
         @Override
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
-            Log.d("result", result);
             if (result.equals("User Created")) {
 
                 mAuth.createUserWithEmailAndPassword(registerUsername.getText().toString(), registerPassword.getText().toString());
@@ -172,29 +180,25 @@ public class registerScreen extends Fragment implements View.OnClickListener {
                                         public void onComplete(@NonNull Task task) {
 
                                             if (task.isSuccessful()) {
-                                                Log.d("SUCESS", "EMAIL VERIFICATION");
+                                                Log.d("SUCESS", "EMAIL SENT");
 
                                             } else {
-                                                Log.e("NOPE", "sendEmailVerification", task.getException());
+                                                Log.e("NOPE", "sendEmailVerification failed", task.getException());
 
                                             }
                                         }
                                     });
-
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w("PROBLEM", "signInWithEmail:failure", task.getException());
 
                                 }
-
-                                // ...
                             }
                         });
 
-
-
                 mListener.registerFragmentInteraction("PHP MESSAGE", result);
-
+                Toast toast = Toast.makeText(getContext(), "Please verify your email before logging in.", Toast.LENGTH_LONG);
+                toast.show();
             }
             if (result.equals("username already in database")){
                 registerUsername.setError("Username already registered");

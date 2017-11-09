@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_flight_search"
+            android:icon="@drawable/ic_flight_data"
+            android:title="Search Flights" />
+        <item
+            android:id="@+id/nav_load_pinned_flights"
+            android:icon="@drawable/ic_load"
+            android:title="Load Tracked Flights" />
+        <item
+            android:id="@+id/nav_search_history"
+            android:icon="@drawable/ic_price_history"
+            android:title="Search Price History" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout"
+            android:title="Logout" />
+    </group>
+
+
+</menu>

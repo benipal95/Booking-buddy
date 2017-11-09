@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,8 +22,10 @@ import com.google.firebase.auth.FirebaseUser;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.URL;import group10.tcss450.uw.edu.bookingbuddy.R;
+import java.net.URL;
+import java.net.URLEncoder;
 
 
 /**
@@ -37,6 +40,7 @@ public class loginScreen extends Fragment implements View.OnClickListener{
     private loginFragmentInteractionListener mListener;
     private EditText loginUsername;
     private EditText loginPassword;
+    private Button forgotPasswordButton;
 
     private Button loginButton;
     private FirebaseAuth mAuth;
@@ -56,20 +60,28 @@ public class loginScreen extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         AsyncTask<String, Void, String> task = null;
         if (mListener != null) {
-            task = new GetWebServiceTask();
+            if(v.equals(loginButton)) {
+                task = new GetWebServiceTask();
+                task.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
+            } else if(v.equals(forgotPasswordButton)) {
+                mListener.loginFragmentInteraction(false);
+
+            }
 
         }
-        task.execute(PARTIAL_URL, loginUsername.getText().toString(), loginPassword.getText().toString());
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login_screen, container, false);
-        loginUsername = (EditText) v.findViewById(R.id.loginUsername);
-        loginPassword = (EditText) v.findViewById(R.id.loginPassword);
-        loginButton = (Button) v.findViewById(R.id.loginButton);
+        loginUsername = v.findViewById(R.id.loginUsername);
+        loginPassword =  v.findViewById(R.id.loginPassword);
+        loginButton = v.findViewById(R.id.loginButton);
+        forgotPasswordButton = v.findViewById(R.id.forgotPassword);
         loginButton.setOnClickListener(this);
+        forgotPasswordButton.setOnClickListener(this);
 
         return v;
     }
@@ -106,21 +118,59 @@ public class loginScreen extends Fragment implements View.OnClickListener{
      */
     public interface loginFragmentInteractionListener {
         // TODO: Update argument type and name
-        void loginFragmentInteraction(String username, String password);
+        void loginFragmentInteraction(Boolean result);
     }
 
     private class GetWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "login.php";
+        private boolean loggedInFirebase = false;
         @Override
         protected String doInBackground(String... strings) {
             if (strings.length != 3) {
                 throw new IllegalArgumentException("Two String arguments required.");
             }
+
+            mAuth.signInWithEmailAndPassword(strings[1], strings[2])
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("SUCCESS", "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getInstance().getCurrentUser();
+                                if(user.isEmailVerified()) {
+
+                                } else {
+                                    Toast toast = Toast.makeText(getContext(), "Please verify your email before logging in.", Toast.LENGTH_LONG);
+                                    toast.show();
+                                }
+
+                            } else {
+                                Log.d("FAILURE", "signinWithEmail");
+                            }
+                        }
+                    });
             String response = "";
             HttpURLConnection urlConnection = null;
             String url = strings[0];
             String args = "?first_name="+ strings[1] + "&user_pass=" + strings[2];
             try {
+                if(loggedInFirebase) {
+                    URL urlObject = new URL(url + SERVICE);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setDoOutput(true);
+                    OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+                    String data = URLEncoder.encode("first_name", "UTF-8")
+                            + "=" + URLEncoder.encode(strings[1], "UTF-8") +"&" + URLEncoder.encode("user_pass","UTF-8") + "="
+                            + URLEncoder.encode(strings[2], "UTF-8")+ "&" + URLEncoder.encode("rp", "UTF-8") + "=1";
+                    Log.d(data, "DATA ");
+                    wr.write(data);
+                    wr.flush();
+                    InputStream content = urlConnection.getInputStream();
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                }
+
                 URL urlObject = new URL(url + SERVICE + args);
                 urlConnection = (HttpURLConnection) urlObject.openConnection();
                 InputStream content = urlConnection.getInputStream();
@@ -129,6 +179,7 @@ public class loginScreen extends Fragment implements View.OnClickListener{
                 while ((s = buffer.readLine()) != null) {
                     response += s;
                 }
+
             } catch (Exception e) {
                 response = "Unable to connect, Reason: "
                         + e.getMessage();
@@ -143,29 +194,12 @@ public class loginScreen extends Fragment implements View.OnClickListener{
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
             if (result.equals("not found")) {
-                loginUsername.setError("Unable to login");
-
+                loginUsername.setError("Check email or password");
             }
 
             if(result.equals("found")) {
-                mAuth.signInWithEmailAndPassword(loginUsername.getText().toString(), loginPassword.getText().toString())
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d("SUCCESS", "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getInstance().getCurrentUser();
-                                    mListener.loginFragmentInteraction("PHP MESSAGE", "LOGIN SUCCESSFUL");
 
-
-                                    // ...
-                                } else {
-                                    Log.d("FAILURE", "signinWithEmail");
-                                }
-                            }
-                        });
-
+                mListener.loginFragmentInteraction(true);
 
                  }
 
