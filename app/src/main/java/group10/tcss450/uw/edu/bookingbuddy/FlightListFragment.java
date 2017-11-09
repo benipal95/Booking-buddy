@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +72,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View searchView = inflater.inflate(R.layout.fragment_flight_list, container, false);
         Button graphButton = (Button) searchView.findViewById(R.id.graph_submit);
         graphButton.setOnClickListener(this);
@@ -213,6 +216,14 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         @Override
         protected void onPostExecute(String result)
         {
+
+            FlightListRecyclerView adapter;
+
+            RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter = new FlightListRecyclerView((ArrayList) dataJSON);
+            //adapter.setClickListener(this);
+            recyclerView.setAdapter(adapter);
 
             Integer[] stockArr = new Integer[sb.size()];
             stockArr = sb.toArray(stockArr);
