@@ -44,6 +44,7 @@ public class loginScreen extends Fragment implements View.OnClickListener{
 
     private Button loginButton;
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
     public loginScreen() {
         // Required empty public constructor
     }
@@ -56,13 +57,30 @@ public class loginScreen extends Fragment implements View.OnClickListener{
         super.onStart();
     }
 
+
     @Override
     public void onClick(View v) {
-        AsyncTask<String, Void, String> task = null;
+        final AsyncTask<String, Void, String> loginTask = new GetWebServiceTask();
         if (mListener != null) {
             if(v.equals(loginButton)) {
-                task = new GetWebServiceTask();
-                task.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
+                mAuth.signInWithEmailAndPassword(loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString())
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("SUCCCESS", "signInWithEmail:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    setUser(user);
+                                    loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w("FAIL", "signInWithEmail:failure", task.getException());
+                                }
+
+                            }
+                        });
+
             } else if(v.equals(forgotPasswordButton)) {
                 mListener.loginFragmentInteraction(false);
 
@@ -106,6 +124,11 @@ public class loginScreen extends Fragment implements View.OnClickListener{
         mListener = null;
     }
 
+
+    private void setUser(FirebaseUser theUser) {
+        user = theUser;
+
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -123,72 +146,100 @@ public class loginScreen extends Fragment implements View.OnClickListener{
 
     private class GetWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "login.php";
-        private boolean loggedInFirebase = false;
+        boolean loggedIntoFirebase = false;
         @Override
         protected String doInBackground(String... strings) {
+            final String theUrl = strings[0];
+            final String firstArg = strings[1];
+            final String secondArg = strings[2];
+            final String theArgs = "?first_name=" + strings[1] + "&user_pass=" + strings[2];
+
             if (strings.length != 3) {
                 throw new IllegalArgumentException("Two String arguments required.");
             }
 
-            mAuth.signInWithEmailAndPassword(strings[1], strings[2])
-                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("SUCCESS", "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getInstance().getCurrentUser();
-                                if(user.isEmailVerified()) {
 
-                                } else {
-                                    Toast toast = Toast.makeText(getContext(), "Please verify your email before logging in.", Toast.LENGTH_LONG);
-                                    toast.show();
-                                }
-
-                            } else {
-                                Log.d("FAILURE", "signinWithEmail");
-                            }
-                        }
-                    });
             String response = "";
-            HttpURLConnection urlConnection = null;
             String url = strings[0];
-            String args = "?first_name="+ strings[1] + "&user_pass=" + strings[2];
-            try {
-                if(loggedInFirebase) {
-                    URL urlObject = new URL(url + SERVICE);
-                    urlConnection = (HttpURLConnection) urlObject.openConnection();
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setDoOutput(true);
-                    OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                    String data = URLEncoder.encode("first_name", "UTF-8")
-                            + "=" + URLEncoder.encode(strings[1], "UTF-8") +"&" + URLEncoder.encode("user_pass","UTF-8") + "="
-                            + URLEncoder.encode(strings[2], "UTF-8")+ "&" + URLEncoder.encode("rp", "UTF-8") + "=1";
-                    Log.d(data, "DATA ");
-                    wr.write(data);
-                    wr.flush();
-                    InputStream content = urlConnection.getInputStream();
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                }
+            String args = "?first_name=" + strings[1] + "&user_pass=" + strings[2];
 
-                URL urlObject = new URL(url + SERVICE + args);
+
+
+            if(user.isEmailVerified()) {
+                Log.d("Yes","sucessful");
+                String result = postCall(firstArg, secondArg);
+                Log.d("post Result",result);
+            }
+
+
+
+            //if password is reset in firebase then do a post call updating when they login next
+
+
+
+                response = getCall(url, args);
+                return response;
+            }
+
+
+
+        private String postCall(String firstArg, String secondArg) {
+            HttpURLConnection urlConnection = null;
+            String response = "";
+            try {
+                //if firebase is able to login the user but they are not in the database, then
+                //this means that they have reset the password. So make a new POST call to update them in the database.
+                URL urlObject = new URL("http://cssgate.insttech.washington.edu/~pacis93/insertnew.php");
                 urlConnection = (HttpURLConnection) urlObject.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+                String data = URLEncoder.encode("first_name", "UTF-8")
+                        + "=" + URLEncoder.encode(firstArg, "UTF-8") + "&" + URLEncoder.encode("user_pass", "UTF-8") + "="
+                        + URLEncoder.encode(secondArg, "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=yes";
+
+                wr.write(data);
+                wr.flush();
                 InputStream content = urlConnection.getInputStream();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
                 String s = "";
                 while ((s = buffer.readLine()) != null) {
                     response += s;
                 }
+                Log.d("response from post", response);
+
 
             } catch (Exception e) {
                 response = "Unable to connect, Reason: "
                         + e.getMessage();
+                Log.d("ERROR", response);
             } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();
             }
 
             return response;
+        }
+        private String getCall(String url, String args) {
+            String result = "";
+            try{
+                HttpURLConnection urlConnection = null;
+                URL urlObject = new URL(url + SERVICE + args);
+                Log.d("URL IN GET", urlObject.toString());
+                urlConnection = (HttpURLConnection) urlObject.openConnection();
+                InputStream content = urlConnection.getInputStream();
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                String s = "";
+                while ((s = buffer.readLine()) != null) {
+                    result += s;
+                }
+            } catch (Exception e) {
+                result = "Unable to connect, Reason: "
+                        + e.getMessage();
+            }
+
+            return result;
+
         }
         @Override
         protected void onPostExecute(String result) {
@@ -198,14 +249,21 @@ public class loginScreen extends Fragment implements View.OnClickListener{
             }
 
             if(result.equals("found")) {
+                if(mAuth.getCurrentUser().isEmailVerified()) {
+                    mListener.loginFragmentInteraction(true);
+                } else {
 
-                mListener.loginFragmentInteraction(true);
+                    Toast toast = Toast.makeText(getContext(), "Please verify your email before logging in.", Toast.LENGTH_LONG);
+                    toast.show();
 
-                 }
+                }
+
 
             }
 
-
         }
+
+
     }
+}
 

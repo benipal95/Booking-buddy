@@ -139,7 +139,7 @@ public class registerScreen extends Fragment implements View.OnClickListener {
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
                 String data = URLEncoder.encode("first_name", "UTF-8")
                         + "=" + URLEncoder.encode(strings[1], "UTF-8") +"&" + URLEncoder.encode("user_pass","UTF-8") + "="
-                        + URLEncoder.encode(strings[2], "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=0";
+                        + URLEncoder.encode(strings[2], "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=no";
                 Log.d(data, "DATA ");
                 wr.write(data);
                 wr.flush();
@@ -162,7 +162,7 @@ public class registerScreen extends Fragment implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            // Something wrong with the network or the URL.
+            Log.d("RESULT", result);
             if (result.equals("User Created")) {
 
                 mAuth.createUserWithEmailAndPassword(registerUsername.getText().toString(), registerPassword.getText().toString());
