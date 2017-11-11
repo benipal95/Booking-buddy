@@ -27,29 +27,35 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link registerScreen.registerFragmentInteractionListener} interface
- * to handle interaction events.
+ * @author Lorenzo Pacis
+ * This class defines the UI elements and behavior of the register screen of the
+ * application.
  */
 public class registerScreen extends Fragment implements View.OnClickListener {
     private static final String PARTIAL_URL
             = "http://cssgate.insttech.washington.edu/~pacis93/";
     private registerFragmentInteractionListener mListener;
-
     private EditText registerUsername;
     private EditText registerPassword;
     private EditText registerComfirmPasword;
     private Button registerButton;
-
     private FirebaseAuth mAuth;
+
+    /**
+     * Empty Constructor.
+     */
     public registerScreen() {
         // Required empty public constructor
     }
 
-
+    /**
+     * Handles the actions to be taken when a view is clicked, namely
+     * when the submit button when registering is clicked. It will perform checks
+     * to make sure that the email is in a valid format and that the passwords match
+     * and the password length is long enough.
+     * @param v the view that has been clicked.
+     */
     @Override
     public void onClick(View v) {
         if (mListener != null) {
@@ -58,8 +64,14 @@ public class registerScreen extends Fragment implements View.OnClickListener {
             if(android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
 
                 if(registerPassword.getText().toString().equals(registerComfirmPasword.getText().toString())) {
-                    task = new PostWebServiceTask();
-                    task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
+                    if(registerPassword.getText().toString().length() > 6) {
+                        task = new PostWebServiceTask();
+                        task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
+                    } else {
+                        Toast toast = Toast.makeText(getContext(), "Password to short/weak please try again", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
 
                 } else {
                     registerPassword.setError("Passwords Not Matching");
@@ -70,6 +82,14 @@ public class registerScreen extends Fragment implements View.OnClickListener {
 
         }
     }
+
+    /**
+     * Sets up all UI elements for the registration fragment.
+     * @param inflater The inflater
+     * @param container The container of this fragment.
+     * @param savedInstanceState The saved instance of this fragment when it has been detached.
+     * @return returns the view created by this fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,6 +107,10 @@ public class registerScreen extends Fragment implements View.OnClickListener {
     }
 
 
+    /**
+     * When this fragment is attached, sets the mListeners context to this fragment.
+     * @param context The context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -98,6 +122,9 @@ public class registerScreen extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Factory detach method. Sets the mListener to null.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -105,22 +132,28 @@ public class registerScreen extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * The interface which must be implemented by the activity that wants to create and display
+     * this fragment.
      */
     public interface registerFragmentInteractionListener {
-        // TODO: Update argument type and name
+
+        /**
+         * The method that must be implemeneted by the activity. This method currently
+         * passes the username and password of the user, however this functionality is no longer
+         * needed in the current implementation of this application
+         * TODO:Update this method later when needed, current implementation is unnecessary and potentially dangerous to user data.
+         * @param username the email of the user.
+         * @param password the password of the user.
+         */
         void registerFragmentInteraction(String username, String password);
     }
 
 
-
+    /**
+     * This inner class will be used for creating a new AsyncTask to register the user in the database
+     * so long as the user does not already exist in the database, and their information is valid.
+     * It will also register the user into Firebase for email verification.
+     */
     private class PostWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "insertnew.php";
         @Override

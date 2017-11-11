@@ -27,12 +27,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link loginScreen.loginFragmentInteractionListener} interface
- * to handle interaction events.
+ * @author Lorenzo Pacis
+ * This class displays the login screen that a user will see when they choose to login.
+ * It will also handle the GET call for when the user enters their information and attempts
+ * to login to the system by checking the database to see if the user is present.
+ * It will notify the user if their email has not been verified.
  */
 public class loginScreen extends Fragment implements View.OnClickListener{
     private static final String PARTIAL_URL
@@ -45,6 +45,10 @@ public class loginScreen extends Fragment implements View.OnClickListener{
     private Button loginButton;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+
+    /**
+     * Empty constructor.
+     */
     public loginScreen() {
         // Required empty public constructor
     }
@@ -52,12 +56,18 @@ public class loginScreen extends Fragment implements View.OnClickListener{
 
     @Override
     public void onStart() {
-
         mAuth = FirebaseAuth.getInstance();
         super.onStart();
     }
 
 
+    /**
+     * @author Lorenzo Pacis
+     * This method handles what happens on button clicks, namely when the submit button for
+     * logging in is pressed. It will first check to see if logging into firebase is scuessful
+     * and if so, perform a new AsyncTask and check our database to see if they are present.
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         final AsyncTask<String, Void, String> loginTask = new GetWebServiceTask();
@@ -75,6 +85,8 @@ public class loginScreen extends Fragment implements View.OnClickListener{
                                     loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
                                 } else {
                                     // If sign in fails, display a message to the user.
+                                    Toast toast = Toast.makeText(getContext(), "Unable to login, check email or password.", Toast.LENGTH_LONG);
+                                    toast.show();
                                     Log.w("FAIL", "signInWithEmail:failure", task.getException());
                                 }
 
@@ -89,6 +101,16 @@ public class loginScreen extends Fragment implements View.OnClickListener{
         }
 
     }
+
+    /**
+     * @author Lorenzo Pacis
+     * This method instantiates all of the objects needed for this class,
+     * namely all UI elements.
+     * @param inflater The inflater.
+     * @param container The container of this fragment.
+     * @param savedInstanceState The instance of this fragment when the back button is pressed.
+     * @return the view object V.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,9 +126,11 @@ public class loginScreen extends Fragment implements View.OnClickListener{
         return v;
     }
 
-
-
-
+    /**
+     * If the context is an instance of this fragment then
+     * our mListener is set to this context.
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -118,6 +142,9 @@ public class loginScreen extends Fragment implements View.OnClickListener{
         }
     }
 
+    /**
+     * Factory onDetatch.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -125,64 +152,80 @@ public class loginScreen extends Fragment implements View.OnClickListener{
     }
 
 
+    /**
+     * This sets the current user when loggin in.
+     * The purpose of this method is ONLY for seeing if the attempted login of a
+     * user in firebase is valid and if they have verified thier email. Firebase will
+     * always return a non-null object, therefore checking for non null is redudant.
+     * @param theUser The user who has logged in.
+     */
     private void setUser(FirebaseUser theUser) {
         user = theUser;
 
     }
+
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * This is the fragment interaction listener for this class.
+     * It must be implemented by the acitivty that it is to be created and
+     * displayed by.
      */
     public interface loginFragmentInteractionListener {
-        // TODO: Update argument type and name
+
+        /**
+         * This method will be called in the main activity and handles what
+         * should happen when this fragment interaction occurs.
+         * @param result The result is if the user has was able to
+         *               login or not.
+         */
         void loginFragmentInteraction(Boolean result);
     }
 
+    /**
+     * @author Lorenzo Pacis
+     * This inner class defines what will happen when the user attempts to login
+     * to the application and will create a new AsyncTask that will run a webservice
+     * call to see if the user is in the database.
+     */
     private class GetWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "login.php";
-        boolean loggedIntoFirebase = false;
         @Override
         protected String doInBackground(String... strings) {
-            final String theUrl = strings[0];
             final String firstArg = strings[1];
             final String secondArg = strings[2];
-            final String theArgs = "?first_name=" + strings[1] + "&user_pass=" + strings[2];
 
             if (strings.length != 3) {
                 throw new IllegalArgumentException("Two String arguments required.");
             }
 
-
             String response = "";
             String url = strings[0];
             String args = "?first_name=" + strings[1] + "&user_pass=" + strings[2];
+            response = getCall(url, args);
 
-
-
-            if(user.isEmailVerified()) {
+            //If the user is emailVerified meaning they have logged into firebase
+            //and the get call cannot find them in the database then they have
+            //recently updated their password. Therefore, make a post call updating
+            //the password of this user.
+            if(user.isEmailVerified() && response.equals("not found")) {
                 Log.d("Yes","sucessful");
                 String result = postCall(firstArg, secondArg);
                 Log.d("post Result",result);
             }
 
-
-
-            //if password is reset in firebase then do a post call updating when they login next
-
-
-
-                response = getCall(url, args);
+            response = getCall(url, args);
                 return response;
             }
 
-
-
+        /**
+         * This method when called with mill a post call to the webservice.
+         * This functionality is to be used only when a user has recently reset their password
+         * so that they can then make a post call that will change their password
+         * in the database.
+         * @author Lorenzo Pacis
+         * @param firstArg The email address.
+         * @param secondArg The new password.
+         * @return Returns the result of the post call.
+         */
         private String postCall(String firstArg, String secondArg) {
             HttpURLConnection urlConnection = null;
             String response = "";
@@ -220,6 +263,15 @@ public class loginScreen extends Fragment implements View.OnClickListener{
 
             return response;
         }
+
+        /**
+         * This method will make a GET call to the database through the given URL and
+         * with the string arguments. This is used to see if a user is in the database
+         * so that they can log into the application.
+         * @param url The url of the webservice.
+         * @param args The arguments that follow the url.
+         * @return The result of the GET call. Either found or not found.
+         */
         private String getCall(String url, String args) {
             String result = "";
             try{
@@ -241,6 +293,15 @@ public class loginScreen extends Fragment implements View.OnClickListener{
             return result;
 
         }
+
+        /**
+         * This method will be called after doInBackground has finished.
+         * It will either set the loginUsername edit text to have an error
+         * or it will create a new fragment. If the user has not verified
+         * their email, it will display a toast notifying them to do
+         * so before logging in.
+         * @param result This parameter is the result of doInBackground.
+         */
         @Override
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.

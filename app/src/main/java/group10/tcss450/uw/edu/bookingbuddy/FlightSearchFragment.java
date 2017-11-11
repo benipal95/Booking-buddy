@@ -8,8 +8,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -26,7 +29,8 @@ import java.net.URL;
  */
 public class FlightSearchFragment extends Fragment implements View.OnClickListener {
 
-
+    private Spinner originLocation;
+    private Spinner destLocation;
     private OnSearchSubmitListener mListener;
 
     public FlightSearchFragment() {
@@ -41,7 +45,13 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         View theview = inflater.inflate(R.layout.fragment_flight_search, container, false);
         Button thebutton = (Button) theview.findViewById(R.id.b_submit);
         thebutton.setOnClickListener(this);
-
+        destLocation = theview.findViewById(R.id.dest);
+        originLocation = theview.findViewById(R.id.origin);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.IATA_Codes, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        destLocation.setAdapter(adapter);
+        originLocation.setAdapter(adapter);
         return theview;
     }
 
@@ -65,10 +75,16 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        EditText dest = getActivity().findViewById(R.id.edtx_destination);
-        EditText orig = getActivity().findViewById(R.id.edtx_origin);
 
-        mListener.onSearchSubmit(orig.getText().toString(), dest.getText().toString());
+        if(originLocation.getSelectedItem().toString().equals(destLocation.getSelectedItem().toString())) {
+            Toast toast = Toast.makeText(getContext(), "The destination and origin cannot be the same.", Toast.LENGTH_LONG);
+            toast.show();
+
+        } else {
+            mListener.onSearchSubmit(originLocation.getSelectedItem().toString(), destLocation.getSelectedItem().toString());
+        }
+
+
     }
 
     /**

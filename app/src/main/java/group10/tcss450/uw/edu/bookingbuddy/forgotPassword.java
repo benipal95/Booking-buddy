@@ -17,12 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link forgotPassword.forgotPasswordInteractionListener} interface
- * to handle interaction events.
+ * @author Lorenzo Pacis
+ * This class defines the UI elements of the forgot password fragment.
  */
 public class forgotPassword extends Fragment {
 
@@ -31,17 +28,21 @@ public class forgotPassword extends Fragment {
     Button resetButton;
     EditText resetEmail;
 
+    /**
+     * Empty Constructor
+     */
     public forgotPassword() {
         // Required empty public constructor
     }
 
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
+    /**
+     * Initializes all UI elements when the view is created.
+     * @param inflater The inflater.
+     * @param container The container holding this fragment.
+     * @param savedInstanceState The saved instance of this fragment when the back button is pressed.
+     * @return The view that is returned when created.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,6 +78,10 @@ public class forgotPassword extends Fragment {
     }
 
 
+    /**
+     * When this fragment is attached sets the mListeners context to this fragment.
+     * @param context returns the context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -88,6 +93,9 @@ public class forgotPassword extends Fragment {
         }
     }
 
+    /**
+     * Factory on detatch, sets the mListener to null.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -95,17 +103,17 @@ public class forgotPassword extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more informzation.
+     * The interface that must be implemented by the activity that creates
+     * this fragment.
      */
     public interface forgotPasswordInteractionListener {
-        // TODO: Update argument type and name
+
+
+        /**
+         * Not currently in use
+         * TODO: Update this methods parameters when/if necessary
+         * @param uri
+         */
         void forgotPasswordInteraction(Uri uri);
     }
 }

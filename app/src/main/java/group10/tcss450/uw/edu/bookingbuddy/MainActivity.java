@@ -19,12 +19,23 @@ import android.view.MenuItem;
 
 import java.util.Arrays;
 
+/**
+ * The main activity of the application. Currently housing ALL fragments.
+ * TODO: Split this acivitiy into smaller acitivitys and pass around the intent, this should be done for phase 2 of our development.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,
         splashScreen.splashFragmentInteractionListener, loginScreen.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
-        registerScreen.registerFragmentInteractionListener, displayScreen.OnFragmentInteractionListener, forgotPassword.forgotPasswordInteractionListener{
+        registerScreen.registerFragmentInteractionListener, forgotPassword.forgotPasswordInteractionListener{
 
     ActionBarDrawerToggle toggle;
+
+    /**
+     * This method will be called when the activity is created. It will instantiate and create
+     * all necessary UI elements as well as open a new splashScreen fragment that the user will see
+     * when the application is started.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +64,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Defines the behavior when the back button is pressed for the drawer.
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -63,6 +77,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Inflates the menu for when the toolbar menu is created.
+     * @param menu The menu.
+     * @return Returns true that the menu was inflated.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -70,6 +89,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Defines behavior for when an item is selected.
+     * @param item The selected item.
+     * @return If the item was found in the selection.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -85,6 +109,11 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Handles the behavior for when a navigation item is selected by the user.
+     * @param item The item selected.
+     * @return returns true for all current implementations of any item pressed.
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -117,6 +146,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Defines the behavior for when the search button is pressed.
+     * @param origin
+     * @param destination
+     */
     @Override
     public void onSearchSubmit(String origin, String destination) {
         FlightListFragment listFrag = new FlightListFragment();
@@ -170,6 +204,8 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Parameters are currently redundant - TODO: Remove them and update args if needed.
+     * This method is to be called by login and register fragment interactions
+     * it will create a new display screen.
      */
     public void openDisplayScreen() {
         toggle.setDrawerIndicatorEnabled(true);

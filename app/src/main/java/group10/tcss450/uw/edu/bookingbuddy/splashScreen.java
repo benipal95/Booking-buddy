@@ -8,22 +8,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link splashScreen.splashFragmentInteractionListener} interface
- * to handle interaction events.
+ * @author Lorenzo Pacis
+ * This class defines the UI fragment that will be displayed upon application
+ * startup.
  */
 public class splashScreen extends Fragment implements View.OnClickListener {
 
     private splashFragmentInteractionListener mListener;
 
+    /**
+     * Empty constructor.
+     */
     public splashScreen() {
         // Required empty public constructor
     }
 
-
+    /**
+     * When this view is created, instantiates all UI elements.
+     * @param inflater The inflater.
+     * @param container The container of this fragment.
+     * @param savedInstanceState The saved instance of this fragment when the backbutton
+     *                           is pressed.
+     * @return Returns the view that is created inside of this method.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -37,6 +45,12 @@ public class splashScreen extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    /**
+     * Handles what happens when either the login
+     * or register buttons are pressed and notifies the
+     * main activity.
+     * @param v Which UI element has been clicked.
+     */
     @Override
     public void onClick(View v) {
         if (mListener != null) {
@@ -53,6 +67,10 @@ public class splashScreen extends Fragment implements View.OnClickListener {
 }
     }
 
+    /**
+     * When this fragment is attached, sets the mListeners context to this fragment.
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -64,6 +82,10 @@ public class splashScreen extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Handles the detaching of this fragment.
+     * Sets the mListener to null, removing the context.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -71,17 +93,17 @@ public class splashScreen extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface that must be implemented by the activity
+     * that wants to create this fragment.
      */
     public interface splashFragmentInteractionListener {
-        // TODO: Update argument type and name
+
+        /**
+         * Method that must be implemented in the activity
+         * that implements this interface.
+         * @param selection The selected UI element, either
+         *                  login or register.
+         */
         void splashFragmentInteraction(int selection);
     }
 }
