@@ -164,7 +164,12 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         ArrayList<HashMap<String, String>> dataJSON;
 
 
-
+        /**
+         * This method will make a call to the API and create new JSON objects and create a hashmap of their values that will be later
+         * used by a recycler view and a graph class to display this information.
+         * @param strings
+         * @return The result of the API call to the webservice.
+         */
         @Override
         protected String doInBackground(String... strings) {
             String response = "";
@@ -226,6 +231,12 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             return sb.toString();
 
         }
+
+        /**
+         * When doInBackground has finished executing, this method will create a new recylcer view
+         * to display the result of the API call.
+         * @param result The result of doInBackground, which is the result of the API call.
+         */
         @Override
         protected void onPostExecute(String result)
         {

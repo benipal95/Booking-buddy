@@ -22,10 +22,9 @@ import java.net.URL;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FlightSearchFragment.OnSearchSubmitListener} interface
- * to handle interaction events.
+ * @author Jacob
+ * This class will handle displaying all UI elements for when a user
+ * wants to search for a flight.
  */
 public class FlightSearchFragment extends Fragment implements View.OnClickListener {
 
@@ -33,11 +32,22 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     private Spinner destLocation;
     private OnSearchSubmitListener mListener;
 
+    /**
+     * Empty constructor.
+     */
     public FlightSearchFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     * When the view is created, instantiates all UI elements and populates the spinners
+     * with IATA Codes.
+     * @param inflater The inflater.
+     * @param container The fragments container,
+     * @param savedInstanceState The saved instance of this fragment.
+     * @return The view that this method creates.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +66,10 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     }
 
 
+    /**
+     * When attached, will set the context of the mListener to this fragment.
+     * @param context This fragments context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -67,12 +81,22 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    /**
+     * On detach sets the mListener's context to null.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Handles when a view is clicked. If the origin and the destination are not the same,
+     * it will call onSearchSubmit, which is this fragments interaction.
+     * If they are the same, then it will display a toast notiying the user that the origin
+     * and destination cannot be the same place.
+     * @param view
+     */
     @Override
     public void onClick(View view) {
 
@@ -88,16 +112,15 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * This interface must be implemented by the activity or fragment that wants to
+     * create and display this fragment.
      */
     public interface OnSearchSubmitListener {
+        /**
+         * This method must be implemented by whichever class implements this interface.
+         * @param origin The origin IATA code.
+         * @param destination The destination IATA code.
+         */
         void onSearchSubmit(String origin, String destination);
     }
 

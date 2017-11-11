@@ -155,6 +155,13 @@ public class registerScreen extends Fragment implements View.OnClickListener {
      */
     private class PostWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "insertnew.php";
+
+        /**
+         * Performs a background task, which will make a POST call to register
+         * a new user in the database.
+         * @param strings The arguments to be used to create the POST call.
+         * @return the result of the POST call.
+         */
         @Override
         protected String doInBackground(String... strings) {
             if (strings.length != 3) {
@@ -192,6 +199,13 @@ public class registerScreen extends Fragment implements View.OnClickListener {
         }
 
 
+        /**
+         * When the background task has finished executing,
+         * if a user has been created in the database this method will
+         * also create a new user in Firebase and send them an email to verify that they
+         * own that email.
+         * @param result The result of doInBackground.
+         */
         @Override
         protected void onPostExecute(String result) {
             Log.d("RESULT", result);
