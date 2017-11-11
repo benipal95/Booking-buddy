@@ -141,7 +141,6 @@ public class registerScreen extends Fragment implements View.OnClickListener {
          * The method that must be implemeneted by the activity. This method currently
          * passes the username and password of the user, however this functionality is no longer
          * needed in the current implementation of this application
-         * TODO:Update this method later when needed, current implementation is unnecessary and potentially dangerous to user data.
          * @param username the email of the user.
          * @param password the password of the user.
          */

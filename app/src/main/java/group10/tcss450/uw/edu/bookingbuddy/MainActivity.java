@@ -21,7 +21,6 @@ import java.util.Arrays;
 
 /**
  * The main activity of the application. Currently housing ALL fragments.
- * TODO: Split this acivitiy into smaller acitivitys and pass around the intent, this should be done for phase 2 of our development.
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,

@@ -98,7 +98,6 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnSearchSubmitListener {
-        // TODO: Update argument type and name
         void onSearchSubmit(String origin, String destination);
     }
 

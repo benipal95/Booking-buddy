@@ -18,12 +18,16 @@ import java.util.ArrayList;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * @Author Tanvir
+ * This class will display a graph of the data that results from searching for a flight.
  */
 public class GraphFragment extends Fragment implements  View.OnClickListener{
     private FlightListFragment.OnGraphInteractionListener mListener;
 
 
+    /**
+     * Empty Constructor
+     */
     public GraphFragment() {
 
     }
@@ -50,7 +54,14 @@ public class GraphFragment extends Fragment implements  View.OnClickListener{
 //    }
 
 
-
+    /**
+     * When the view is created all UI elements will be instantiated and
+     * the graph built.
+     * @param inflater The inflater.
+     * @param container The fragments container.
+     * @param savedInstanceState The saved instance of this fragment.
+     * @return Returns the view created by this method.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,12 +81,16 @@ public class GraphFragment extends Fragment implements  View.OnClickListener{
         graph.getViewport().setMinX(0);
         graph.getViewport().setMaxX(10);
         graph.addSeries(series);
-
         return gView;
 
 
     }
 
+    /**
+     * When this fragment is attached, sets the mListerner context to the context
+     * of this fragment.
+     * @param context The applications context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -87,12 +102,20 @@ public class GraphFragment extends Fragment implements  View.OnClickListener{
         }
     }
 
+    /**
+     * Factory detach, sets the mListener context to null.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Handles clicks on this view, currently not implemented
+     * for phase 1.
+     * @param view The view that has been clicked.
+     */
     @Override
     public void onClick(View view) {
 

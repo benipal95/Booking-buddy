@@ -12,20 +12,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by jjtowers on 11/9/2017.
- */
 
+/**
+ * @author Jacob
+ * This class handles how the data returned from a flight search will be displayed inside of the fragment.
+ * This class extends RecyclerView, a way for the data to be listed in a listed view.
+ */
 public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyclerView.ViewHolder>
 {
 
     private final List<HashMap> mValues;
 
+    /**
+     * Constructor that accepts a hashmap containing flight data.
+     * @param mValues
+     */
     public FlightListRecyclerView(List<HashMap> mValues) {
         this.mValues = mValues;
     }
     //private final OnListFragmentInteractionListener mListener;
 
+    /**
+     * When called, creates a new view and inflates the recylcer view.
+     * @param parent The parent view group.
+     * @param viewType The view type.
+     * @return the viewholder created in this method.
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -33,6 +45,12 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         return new ViewHolder(view);
     }
 
+    /**
+     * This method sets the holders text data so that it can be represented
+     * by the recycler view.
+     * @param holder The view holder.
+     * @param position The position in the recycler view.
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         HashMap<String, String> hashData = mValues.get(position);
@@ -43,11 +61,18 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         holder.mDestination.setText(hashData.get("destination"));
     }
 
+    /**
+     * This method will return the number of items in the recylcer view.
+     * @return The number of items in the recylcer view.
+     */
     @Override
     public int getItemCount() {
         return mValues.size();
     }
 
+    /**
+     * This class holds the views that will be displayed by recycler view.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View mView;
@@ -58,6 +83,10 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         public final TextView mDestination;
 
 
+        /**
+         * Constructor that takes in the view that these items will be displayed on.
+         * @param itemView The view that the  UI elements will be displayed on.
+         */
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;

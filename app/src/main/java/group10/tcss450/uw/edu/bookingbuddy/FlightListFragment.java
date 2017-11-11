@@ -37,10 +37,9 @@ import static android.content.ContentValues.TAG;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FlightListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * @author Jacob
+ * This class will display all UI elements for when a user searches for flights
+ * will display all the flights from the origin to the destination.
  */
 public class FlightListFragment extends Fragment implements View.OnClickListener{
 
@@ -49,10 +48,18 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     private static Integer[] graphArr;
     private static String origin;
     private static String dest;
+
+    /**
+     * Empty Constructor
+     */
     public FlightListFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * When this fragment is started,
+     * Gets the arguments passed in by the bundle.
+     */
     @Override
     public void onStart()
     {
@@ -68,6 +75,13 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    /**
+     * When this view is created, instantiates all UI elements necessary for the fragment.
+     * @param inflater The inflater.
+     * @param container This fragments container.
+     * @param savedInstanceState The saved instance of this fragment.
+     * @return The view that is created by this method.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,13 +93,11 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         return searchView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
+    /**
+     * When attached, sets the context of the mListener and the gListener.
+     * @param context The application context.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -99,6 +111,9 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    /**
+     * When this fragment is detached, sets the mListener and gListeners contexts to null.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -106,42 +121,40 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         gListener = null;
     }
 
+    /**
+     * When the graph button is clicked, calls the onGraphSubmit method.
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         gListener.onGraphSubmit(graphArr);
         Log.d("grapharr", graphArr.toString());
     }
 //
-    private void setGraphArr(Integer[] temp) {
-        graphArr = new Integer[10];
-        graphArr = temp;
-        Log.d("grapharrset", graphArr.toString());
-
-    }
 //
 //    private Integer[] getGraphArr(void) {
 //        graphArr = temp;
 //    }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * This interface must be implemented by the activity that will be creating this fragment.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri); // Don't know yet if we'll need this, but including it just in case
     }
 
+    /**
+     * This interface is implemented in this class, when the view graph button is pressed,
+     * the method onGraphSubmit wil be called.
+     */
     public interface OnGraphInteractionListener {
         void onGraphSubmit(Integer[] arr);
     }
 
+    /**
+     * This class handles the actions to be taken when a new FlightSearchTask is executed and will make
+     * calls to the API to get the flights that the user is searching for.
+     */
     private class FlightSearchTask extends AsyncTask<String, Void, String>
     {
         private static final String URL_FIRST = "http://api.travelpayouts.com/v2/prices/latest?currency=usd&period_type=year&page=1&limit=10&origin=";

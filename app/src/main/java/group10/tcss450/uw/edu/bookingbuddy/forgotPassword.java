@@ -111,7 +111,6 @@ public class forgotPassword extends Fragment {
 
         /**
          * Not currently in use
-         * TODO: Update this methods parameters when/if necessary
          * @param uri
          */
         void forgotPasswordInteraction(Uri uri);
