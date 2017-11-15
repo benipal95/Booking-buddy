@@ -34,7 +34,7 @@ import java.net.URLEncoder;
  * to login to the system by checking the database to see if the user is present.
  * It will notify the user if their email has not been verified.
  */
-public class loginScreen extends Fragment implements View.OnClickListener{
+public class LoginFragment extends Fragment implements View.OnClickListener{
     private static final String PARTIAL_URL
             = "http://cssgate.insttech.washington.edu/~pacis93/";
     private loginFragmentInteractionListener mListener;
@@ -49,7 +49,7 @@ public class loginScreen extends Fragment implements View.OnClickListener{
     /**
      * Empty constructor.
      */
-    public loginScreen() {
+    public LoginFragment() {
         // Required empty public constructor
     }
 

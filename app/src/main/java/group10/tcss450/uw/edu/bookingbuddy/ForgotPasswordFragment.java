@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * @author Lorenzo Pacis
  * This class defines the UI elements of the forgot password fragment.
  */
-public class forgotPassword extends Fragment {
+public class ForgotPasswordFragment extends Fragment {
 
     private forgotPasswordInteractionListener mListener;
     private FirebaseAuth auth;
@@ -31,7 +31,7 @@ public class forgotPassword extends Fragment {
     /**
      * Empty Constructor
      */
-    public forgotPassword() {
+    public ForgotPasswordFragment() {
         // Required empty public constructor
     }
 

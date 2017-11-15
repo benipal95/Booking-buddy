@@ -2,36 +2,30 @@ package group10.tcss450.uw.edu.bookingbuddy;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.Arrays;
 
 /**
  * The main activity of the application. Currently housing ALL fragments.
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,
-        splashScreen.splashFragmentInteractionListener, loginScreen.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
-        registerScreen.registerFragmentInteractionListener, forgotPassword.forgotPasswordInteractionListener{
+        StartupFragment.splashFragmentInteractionListener, LoginFragment.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
+        RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener{
 
     ActionBarDrawerToggle toggle;
 
     /**
      * This method will be called when the activity is created. It will instantiate and create
-     * all necessary UI elements as well as open a new splashScreen fragment that the user will see
+     * all necessary UI elements as well as open a new StartupFragment fragment that the user will see
      * when the application is started.
      * @param savedInstanceState
      */
@@ -53,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         if(savedInstanceState == null) {
             if (findViewById(R.id.fragmentContainer) != null) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragmentContainer, new splashScreen())
+                        .add(R.id.fragmentContainer, new StartupFragment())
                         .commit();
             }
         }
@@ -135,7 +129,7 @@ public class MainActivity extends AppCompatActivity
             {
                 toggle.setDrawerIndicatorEnabled(false);
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, new splashScreen()).addToBackStack(null)
+                        .replace(R.id.fragmentContainer, new StartupFragment()).addToBackStack(null)
                         .commit();
             }
         }
@@ -179,7 +173,7 @@ public class MainActivity extends AppCompatActivity
     public void splashFragmentInteraction(int selection) {
 
         if(selection == 0) {
-            loginScreen loginFragment = new loginScreen();
+            LoginFragment loginFragment = new LoginFragment();
             FragmentTransaction transaction = getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, loginFragment)
@@ -188,7 +182,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if(selection == 1){
             Log.d("Something","stuff");
-            registerScreen registerFragment = new registerScreen();
+            RegisterFragment registerFragment = new RegisterFragment();
             FragmentTransaction transaction = getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, registerFragment)
@@ -223,7 +217,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             FragmentTransaction transaction = getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer, new forgotPassword())
+                    .replace(R.id.fragmentContainer, new ForgotPasswordFragment())
                     .addToBackStack(null);
             transaction.commit();
 

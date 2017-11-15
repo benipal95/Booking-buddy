@@ -13,14 +13,14 @@ import android.widget.Button;
  * This class defines the UI fragment that will be displayed upon application
  * startup.
  */
-public class splashScreen extends Fragment implements View.OnClickListener {
+public class StartupFragment extends Fragment implements View.OnClickListener {
 
     private splashFragmentInteractionListener mListener;
 
     /**
      * Empty constructor.
      */
-    public splashScreen() {
+    public StartupFragment() {
         // Required empty public constructor
     }
 

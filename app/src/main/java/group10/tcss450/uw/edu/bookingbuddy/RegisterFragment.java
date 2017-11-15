@@ -32,7 +32,7 @@ import java.net.URLEncoder;
  * This class defines the UI elements and behavior of the register screen of the
  * application.
  */
-public class registerScreen extends Fragment implements View.OnClickListener {
+public class RegisterFragment extends Fragment implements View.OnClickListener {
     private static final String PARTIAL_URL
             = "http://cssgate.insttech.washington.edu/~pacis93/";
     private registerFragmentInteractionListener mListener;
@@ -45,7 +45,7 @@ public class registerScreen extends Fragment implements View.OnClickListener {
     /**
      * Empty Constructor.
      */
-    public registerScreen() {
+    public RegisterFragment() {
         // Required empty public constructor
     }
 
