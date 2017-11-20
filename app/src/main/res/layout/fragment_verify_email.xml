@@ -3,33 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ResetPasswordFragment">
+    tools:context="group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.VerifyEmailFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <EditText
-        android:id="@+id/resetCodeText"
+        android:id="@+id/emailVerificationCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Reset Code"
+        android:hint="Email Verification Code"
         android:inputType="textPersonName"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/resetPasswordButton"
+        android:id="@+id/verifyEmailButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:text="Continue"
+        android:text="Submit"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resetCodeText" />
+        app:layout_constraintTop_toBottomOf="@+id/emailVerificationCode" />
 </android.support.constraint.ConstraintLayout>

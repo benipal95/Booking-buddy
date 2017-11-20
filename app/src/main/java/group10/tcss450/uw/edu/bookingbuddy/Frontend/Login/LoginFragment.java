@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Frontend;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend.Login;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -26,7 +26,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Random;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.EmailVerificationTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
@@ -78,7 +80,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
 
             } else if(v.equals(forgotPasswordButton)) {
-                mListener.loginFragmentInteraction(false);
+                mListener.loginFragmentInteraction(false, false, null, null);
 
             }
 
@@ -166,10 +168,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         /**
          * This method will be called in the main activity and handles what
          * should happen when this fragment interaction occurs.
-         * @param result The result is if the user has was able to
+         * @param loggedIn The result is if the user has was able to
          *               login or not.
          */
-        void loginFragmentInteraction(Boolean result);
+        void loginFragmentInteraction(Boolean loggedIn, Boolean verification, String verificationCode, String email);
     }
 
     /**
@@ -194,7 +196,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             String args = "?first_name=" + strings[1] + "&user_pass=" + strings[2];
 
             response = getCall(url, args);
-                return response;
+            return response;
             }
 
 
@@ -212,7 +214,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             try{
                 HttpURLConnection urlConnection = null;
                 URL urlObject = new URL(url + SERVICE + args);
-                Log.d("URL IN GET", urlObject.toString());
                 urlConnection = (HttpURLConnection) urlObject.openConnection();
                 InputStream content = urlConnection.getInputStream();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
@@ -225,6 +226,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                         + e.getMessage();
             }
 
+            Log.d("result", result);
             return result;
 
         }
@@ -244,17 +246,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 loginUsername.setError("Check email or password");
             }
 
-            if(result.equals("found")) {
-                if(mAuth.getCurrentUser().isEmailVerified()) {
-                    mListener.loginFragmentInteraction(true);
-                } else {
-
-                    Toast toast = Toast.makeText(getContext(), "Please verify your email before logging in.", Toast.LENGTH_LONG);
-                    toast.show();
-
-                }
-
-
+            else if(result.equals("found")) {
+                    mListener.loginFragmentInteraction(true, true, null, null);
+            } else if(result.equals("verification needed")) {
+                Random rand = new Random();
+                int randomGen = rand.nextInt(2000) + 1000;
+                String code = randomGen +"";
+                EmailVerificationTask verifyEmailTask = new EmailVerificationTask();
+                verifyEmailTask.execute(code,loginUsername.getText().toString());
+                mListener.loginFragmentInteraction(true, false, code, loginUsername.getText().toString());
             }
 
         }

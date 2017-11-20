@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Frontend;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset;
 
 import android.content.Context;
 import android.net.Uri;
@@ -64,7 +64,7 @@ public class ForgotPasswordFragment extends Fragment {
                 int randomGen = rand.nextInt(2000) + 1000;
                 String code = randomGen +"";
                 ForgotPasswordTask forgotPass = new ForgotPasswordTask();
-                forgotPass.execute(code);
+                forgotPass.execute(code,resetEmail.getText().toString());
                 mListener.forgotPasswordInteraction(code,resetEmail.getText().toString());
             }
 

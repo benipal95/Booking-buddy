@@ -13,6 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.LoginFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.RegisterFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.VerifyEmailFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ForgotPasswordFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ResetPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
@@ -21,7 +26,8 @@ import group10.tcss450.uw.edu.bookingbuddy.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,
         StartupFragment.splashFragmentInteractionListener, LoginFragment.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
-        RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener, ResetPasswordFragment.resetFragmentInteractionListener,EnterNewPasswordFragment.EnterNewPasswordFragmentInteractionListener{
+        RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener, ResetPasswordFragment.resetFragmentInteractionListener,EnterNewPasswordFragment.EnterNewPasswordFragmentInteractionListener,
+        VerifyEmailFragment.VerifyEmailFragmentInteractionListener{
 
     ActionBarDrawerToggle toggle;
 
@@ -213,10 +219,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void loginFragmentInteraction(Boolean result) {
-        if(result) {
+    public void loginFragmentInteraction(Boolean loggedIn, Boolean verified, String verificationCode, String email) {
+
+        if(loggedIn && verified) {
             openDisplayScreen();
-        } else {
+        } else if(!loggedIn && !verified) {
             FragmentTransaction transaction = getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, new ForgotPasswordFragment())
@@ -224,6 +231,17 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
 
 
+        } else if(loggedIn &&!verified) {
+            VerifyEmailFragment verifyFrag = new VerifyEmailFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("code", verificationCode);
+            args.putSerializable("email", email);
+            verifyFrag.setArguments(args);
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, verifyFrag)
+                    .addToBackStack(null);
+            transaction.commit();
         }
 
 
@@ -233,13 +251,19 @@ public class MainActivity extends AppCompatActivity
     /**
      * After a user has logged in, they will be asked to then register.
      * This will also require the user to verify their email address before they can login.
-     * @param username
-     * @param password
      */
     @Override
-    public void registerFragmentInteraction(String username, String password) {
-        //opens the login after you register
-        splashFragmentInteraction(0);
+    public void registerFragmentInteraction(String verificationCode, String email) {
+        VerifyEmailFragment verifyFrag = new VerifyEmailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("email", email);
+        args.putSerializable("code", verificationCode);
+        verifyFrag.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, verifyFrag)
+                .addToBackStack(null);
+        transaction.commit();
 
     }
 
@@ -293,5 +317,10 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, loginFragment).addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void VerifyEmailFragmentInteraction() {
+        openDisplayScreen();
     }
 }

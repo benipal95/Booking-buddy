@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Frontend;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend.Login;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -26,7 +26,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Random;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.EmailVerificationTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
@@ -143,10 +145,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
          * The method that must be implemeneted by the activity. This method currently
          * passes the username and password of the user, however this functionality is no longer
          * needed in the current implementation of this application
-         * @param username the email of the user.
-         * @param password the password of the user.
          */
-        void registerFragmentInteraction(String username, String password);
+        void registerFragmentInteraction(String verificationCode, String email);
     }
 
 
@@ -157,6 +157,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
      */
     private class PostWebServiceTask extends AsyncTask<String, Void, String> {
         private final String SERVICE = "insertnew.php";
+        Random rand = new Random();
+        int randomGen = rand.nextInt(2000) + 1000;
+        String code = randomGen +"";
+
 
         /**
          * Performs a background task, which will make a POST call to register
@@ -180,7 +184,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
                 String data = URLEncoder.encode("first_name", "UTF-8")
                         + "=" + URLEncoder.encode(strings[1], "UTF-8") +"&" + URLEncoder.encode("user_pass","UTF-8") + "="
-                        + URLEncoder.encode(strings[2], "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=no";
+                        + URLEncoder.encode(strings[2], "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=no"
+                        +"&" + URLEncoder.encode("code","UTF-8") + "=" + URLEncoder.encode(code, "UTF-8");
                 Log.d(data, "DATA ");
                 wr.write(data);
                 wr.flush();
@@ -212,41 +217,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         protected void onPostExecute(String result) {
             Log.d("RESULT", result);
             if (result.equals("User Created")) {
+                EmailVerificationTask verifyEmailTask = new EmailVerificationTask();
+                verifyEmailTask.execute(code,registerUsername.getText().toString());
+                mListener.registerFragmentInteraction(code, registerUsername.getText().toString());
+                Log.d("RESULT", "EMAIL SENT");
 
-                mAuth.createUserWithEmailAndPassword(registerUsername.getText().toString(), registerPassword.getText().toString());
-                FirebaseUser user = null;
-                mAuth.signInWithEmailAndPassword(registerUsername.getText().toString(), registerPassword.getText().toString())
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d("SUCCESS", "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getInstance().getCurrentUser();
-                                    user.sendEmailVerification().addOnCompleteListener(getActivity(), new OnCompleteListener() {
-                                        @Override
-                                        public void onComplete(@NonNull Task task) {
-
-                                            if (task.isSuccessful()) {
-                                                Log.d("SUCESS", "EMAIL SENT");
-
-                                            } else {
-                                                Log.e("NOPE", "sendEmailVerification failed", task.getException());
-
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w("PROBLEM", "signInWithEmail:failure", task.getException());
-
-                                }
-                            }
-                        });
-
-                mListener.registerFragmentInteraction("PHP MESSAGE", result);
-                Toast toast = Toast.makeText(getContext(), "Please verify your email before logging in.", Toast.LENGTH_LONG);
-                toast.show();
             }
             if (result.equals("username already in database")){
                 registerUsername.setError("Username already registered");
