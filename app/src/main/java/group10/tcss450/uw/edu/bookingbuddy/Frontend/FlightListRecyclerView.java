@@ -1,5 +1,6 @@
 package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,10 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         this.mValues = mValues;
     }
     //private final OnListFragmentInteractionListener mListener;
-
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
     /**
      * When called, creates a new view and inflates the recylcer view.
      * @param parent The parent view group.
@@ -41,7 +45,9 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_recycler_layout, parent, false);
-        return new ViewHolder(view);
+
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
     }
 
     /**
@@ -74,6 +80,7 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public final CardView card;
         public final View mView;
         public final TextView mDepartDate;
         public final TextView mReturnDate;
@@ -89,11 +96,12 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            mDepartDate = itemView.findViewById(R.id.r_depart_date);
-            mReturnDate = itemView.findViewById(R.id.r_return_date);
-            mValue = itemView.findViewById(R.id.r_value);
-            mOrigin = itemView.findViewById(R.id.r_origin);
-            mDestination = itemView.findViewById(R.id.r_destination);
+            mDepartDate = itemView.findViewById(R.id.flight_departure_date);
+            card = itemView.findViewById(R.id.flight_card);
+            mReturnDate = itemView.findViewById(R.id.flight_return_date);
+            mValue = itemView.findViewById(R.id.flight_cost);
+            mOrigin = itemView.findViewById(R.id.flight_origin);
+            mDestination = itemView.findViewById(R.id.flight_dest);
         }
     }
 }

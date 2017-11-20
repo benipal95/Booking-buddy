@@ -3,4 +3,19 @@
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorButton">#A0FFFFFF</color>
+    <color name="colorView">#A0FF4081</color>
+    <color name="white">#ffff</color>
+    <color name="lightblue">#ADD8E6</color>
+    <color name="tabsScrollColor">#ADD8E6</color>
+    <color name="gray">#C0C0C0</color>
+    <color name="black">#000000</color>
+
+    <color name="ccolorPrimary">#3F51B5</color>
+    <color name="ccolorPrimaryDark">#303F9F</color>
+    <color name="ccolorAccent">#FF4081</color>
+    <color name="year">#999999</color>
+    <color name="title">#222222</color>
+
+    <drawable name="screen_background_dark_transparent">#80000000</drawable>
 </resources>

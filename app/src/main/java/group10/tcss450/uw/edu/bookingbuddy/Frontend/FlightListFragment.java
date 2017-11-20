@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,11 +54,15 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
 
 
             RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
+
             TextView tx_results = getActivity().findViewById(R.id.tx_flight_list);
             Context context = getContext();
+
+
             task = new FlightSearchTask(context, recyclerView, tx_results);
             //task.initializeTask(context, recyclerView, tx_results);
             task.execute(origin, dest);
+
         }
     }
 
@@ -74,8 +79,8 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         // Inflate the layout for this fragment
 
         View searchView = inflater.inflate(R.layout.fragment_flight_list, container, false);
-        Button graphButton = (Button) searchView.findViewById(R.id.graph_submit);
-        graphButton.setOnClickListener(this);
+       // Button graphButton = (Button) searchView.findViewById(R.id.graph_submit);
+        //graphButton.setOnClickListener(this);
         return searchView;
     }
 
