@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Backend;
 
 /**
  * Created by jjtowers on 11/17/2017.
@@ -24,6 +24,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightListRecyclerView;
 
 import static android.content.ContentValues.TAG;
 

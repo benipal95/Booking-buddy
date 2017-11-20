@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,13 +13,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import group10.tcss450.uw.edu.bookingbuddy.R;
+
 /**
  * The main activity of the application. Currently housing ALL fragments.
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,
         StartupFragment.splashFragmentInteractionListener, LoginFragment.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
-        RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener{
+        RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener, ResetPasswordFragment.resetFragmentInteractionListener,EnterNewPasswordFragment.EnterNewPasswordFragmentInteractionListener{
 
     ActionBarDrawerToggle toggle;
 
@@ -255,7 +257,41 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void forgotPasswordInteraction(Uri uri) {
+    public void forgotPasswordInteraction(String resetCode, String email) {
+        ResetPasswordFragment resetFrag = new ResetPasswordFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("Code", resetCode);
+        args.putSerializable("Email", email);
+        resetFrag.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, resetFrag)
+                .addToBackStack(null);
+        transaction.commit();
 
+    }
+
+    @Override
+    public void resetFragmentInteraction(String email) {
+        EnterNewPasswordFragment enterNewPassFrag = new EnterNewPasswordFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("Email", email);
+        enterNewPassFrag.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer,enterNewPassFrag )
+                .addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void EnterNewPasswordFragmentInteraction(String email) {
+        LoginFragment loginFragment = new LoginFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("Email", email);
+        loginFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, loginFragment).addToBackStack(null)
+                .commit();
     }
 }

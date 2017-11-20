@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
  * @author Lorenzo Pacis

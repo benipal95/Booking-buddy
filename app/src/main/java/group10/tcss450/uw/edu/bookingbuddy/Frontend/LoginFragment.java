@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -26,6 +26,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
  * @author Lorenzo Pacis
@@ -73,25 +75,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         final AsyncTask<String, Void, String> loginTask = new GetWebServiceTask();
         if (mListener != null) {
             if(v.equals(loginButton)) {
-                mAuth.signInWithEmailAndPassword(loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString())
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d("SUCCCESS", "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    setUser(user);
-                                    loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast toast = Toast.makeText(getContext(), "Unable to login, check email or password.", Toast.LENGTH_LONG);
-                                    toast.show();
-                                    Log.w("FAIL", "signInWithEmail:failure", task.getException());
-                                }
-
-                            }
-                        });
+                loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
 
             } else if(v.equals(forgotPasswordButton)) {
                 mListener.loginFragmentInteraction(false);
@@ -122,6 +106,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         forgotPasswordButton = v.findViewById(R.id.forgotPassword);
         loginButton.setOnClickListener(this);
         forgotPasswordButton.setOnClickListener(this);
+        Bundle args = getArguments();
+        if(args !=null) {
+            final String email = (String) args.getSerializable("Email");
+            if(email != null) {
+                loginUsername.setText(email);
+            }
+        }
+
 
         return v;
     }
@@ -194,75 +186,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             final String secondArg = strings[2];
 
             if (strings.length != 3) {
-                throw new IllegalArgumentException("Two String arguments required.");
+                throw new IllegalArgumentException("Three String arguments required.");
             }
 
             String response = "";
             String url = strings[0];
             String args = "?first_name=" + strings[1] + "&user_pass=" + strings[2];
-            response = getCall(url, args);
-
-            //If the user is emailVerified meaning they have logged into firebase
-            //and the get call cannot find them in the database then they have
-            //recently updated their password. Therefore, make a post call updating
-            //the password of this user.
-            if(user.isEmailVerified() && response.equals("not found")) {
-                Log.d("Yes","sucessful");
-                String result = postCall(firstArg, secondArg);
-                Log.d("post Result",result);
-            }
 
             response = getCall(url, args);
                 return response;
             }
 
-        /**
-         * This method when called with mill a post call to the webservice.
-         * This functionality is to be used only when a user has recently reset their password
-         * so that they can then make a post call that will change their password
-         * in the database.
-         * @author Lorenzo Pacis
-         * @param firstArg The email address.
-         * @param secondArg The new password.
-         * @return Returns the result of the post call.
-         */
-        private String postCall(String firstArg, String secondArg) {
-            HttpURLConnection urlConnection = null;
-            String response = "";
-            try {
-                //if firebase is able to login the user but they are not in the database, then
-                //this means that they have reset the password. So make a new POST call to update them in the database.
-                URL urlObject = new URL("http://cssgate.insttech.washington.edu/~pacis93/insertnew.php");
-                urlConnection = (HttpURLConnection) urlObject.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                String data = URLEncoder.encode("first_name", "UTF-8")
-                        + "=" + URLEncoder.encode(firstArg, "UTF-8") + "&" + URLEncoder.encode("user_pass", "UTF-8") + "="
-                        + URLEncoder.encode(secondArg, "UTF-8") + "&" + URLEncoder.encode("rp", "UTF-8") + "=yes";
 
-                wr.write(data);
-                wr.flush();
-                InputStream content = urlConnection.getInputStream();
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                String s = "";
-                while ((s = buffer.readLine()) != null) {
-                    response += s;
-                }
-                Log.d("response from post", response);
-
-
-            } catch (Exception e) {
-                response = "Unable to connect, Reason: "
-                        + e.getMessage();
-                Log.d("ERROR", response);
-            } finally {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            }
-
-            return response;
-        }
 
         /**
          * This method will make a GET call to the database through the given URL and

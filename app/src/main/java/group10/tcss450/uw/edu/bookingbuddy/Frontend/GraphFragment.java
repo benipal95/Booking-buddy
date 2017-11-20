@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
 
 import android.content.Context;
@@ -7,13 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.PointsGraphSeries;
-
-import java.util.ArrayList;
 
 import group10.tcss450.uw.edu.bookingbuddy.R;
 

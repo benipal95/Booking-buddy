@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
 import android.content.Context;
 import android.net.Uri;
@@ -16,6 +16,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Random;
+
+import group10.tcss450.uw.edu.bookingbuddy.Backend.ForgotPasswordTask;
+import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
  * @author Lorenzo Pacis
@@ -55,19 +60,12 @@ public class ForgotPasswordFragment extends Fragment {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = resetEmail.getText().toString().trim();
-                auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "We have sent you instructions to reset your password!", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getContext(), "Failed to send reset email!", Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-                });
+                Random rand = new Random();
+                int randomGen = rand.nextInt(2000) + 1000;
+                String code = randomGen +"";
+                ForgotPasswordTask forgotPass = new ForgotPasswordTask();
+                forgotPass.execute(code);
+                mListener.forgotPasswordInteraction(code,resetEmail.getText().toString());
             }
 
 
@@ -108,11 +106,6 @@ public class ForgotPasswordFragment extends Fragment {
      */
     public interface forgotPasswordInteractionListener {
 
-
-        /**
-         * Not currently in use
-         * @param uri
-         */
-        void forgotPasswordInteraction(Uri uri);
+        void forgotPasswordInteraction(String resetCode, String email);
     }
 }

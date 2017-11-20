@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -26,6 +26,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
  * @author Lorenzo Pacis
@@ -64,7 +66,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             if(android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
 
                 if(registerPassword.getText().toString().equals(registerComfirmPasword.getText().toString())) {
-                    if(registerPassword.getText().toString().length() > 6) {
+                    if(registerPassword.getText().toString().length() > 5) {
                         task = new PostWebServiceTask();
                         task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
                     } else {
