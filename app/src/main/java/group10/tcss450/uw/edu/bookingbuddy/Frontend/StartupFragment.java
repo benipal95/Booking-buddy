@@ -38,7 +38,7 @@ public class StartupFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_splash_screen, container, false);
+        View v = inflater.inflate(R.layout.fragment_startup_screen, container, false);
         Button b = (Button) v.findViewById(R.id.loginButton);
         b.setOnClickListener(this);
         b = (Button) v.findViewById(R.id.registerButton);
