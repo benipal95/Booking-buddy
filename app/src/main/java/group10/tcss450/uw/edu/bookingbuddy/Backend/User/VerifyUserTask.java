@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Backend;
+package group10.tcss450.uw.edu.bookingbuddy.Backend.User;
 
 import android.os.AsyncTask;
 import android.util.Log;

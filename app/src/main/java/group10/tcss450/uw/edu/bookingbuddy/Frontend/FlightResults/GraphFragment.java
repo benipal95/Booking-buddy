@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Frontend;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults;
 
 
 import android.content.Context;
