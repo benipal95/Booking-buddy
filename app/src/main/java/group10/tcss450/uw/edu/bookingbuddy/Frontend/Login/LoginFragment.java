@@ -3,7 +3,6 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.Login;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,24 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Random;
 
-import group10.tcss450.uw.edu.bookingbuddy.Backend.EmailVerificationTask;
+import group10.tcss450.uw.edu.bookingbuddy.Backend.User.EmailVerificationTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**

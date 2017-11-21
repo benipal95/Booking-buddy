@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Frontend;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend.MainUI;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.GraphFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.LoginFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.RegisterFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.VerifyEmailFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.EnterNewPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ForgotPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ResetPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.R;
@@ -71,9 +75,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(true){
             super.onBackPressed();
         }
     }
@@ -323,4 +328,6 @@ public class MainActivity extends AppCompatActivity
     public void VerifyEmailFragmentInteraction() {
         openDisplayScreen();
     }
+
+
 }

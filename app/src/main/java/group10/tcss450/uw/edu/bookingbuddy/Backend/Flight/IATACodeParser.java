@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Backend;
+package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 
 import android.content.Context;
 import android.util.JsonReader;
