@@ -43,6 +43,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
     RecyclerView mRecyclerView;
     TextView mTx_results;
     Context mContext;
+    Flights mFlights;
 
 
     public FlightSearchTask(Context theContext, RecyclerView theRecycler, TextView theTextView)
@@ -108,7 +109,6 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
 
                     //add hashmap back to the HashMap ArrayList
                     dataJSON.add(hashData);
-
                 }
 
             } catch (final JSONException e) {
