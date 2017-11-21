@@ -5,21 +5,28 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.IATACodeParser;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 
@@ -30,8 +37,9 @@ import group10.tcss450.uw.edu.bookingbuddy.R;
  */
 public class FlightSearchFragment extends Fragment implements View.OnClickListener {
 
-    private Spinner originLocation;
-    private Spinner destLocation;
+    private HashMap<String, String> airportCodes;
+    private AutoCompleteTextView destinationText;
+    private AutoCompleteTextView originText;
     private OnSearchSubmitListener mListener;
 
     /**
@@ -57,13 +65,33 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         View theview = inflater.inflate(R.layout.fragment_flight_search, container, false);
         Button thebutton = (Button) theview.findViewById(R.id.b_submit);
         thebutton.setOnClickListener(this);
-        destLocation = theview.findViewById(R.id.dest);
-        originLocation = theview.findViewById(R.id.origin);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.IATA_Codes, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        destLocation.setAdapter(adapter);
-        originLocation.setAdapter(adapter);
+
+       // destLocation.setAdapter(adapter);
+     //   originLocation.setAdapter(adapter);
+        IATACodeParser parser = new IATACodeParser(getActivity());
+        List<HashMap> dataJSON = new ArrayList<>();
+        try {
+            dataJSON = (ArrayList) parser.parseIATAJson();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        airportCodes = new HashMap();
+        final String[] IATACODES = new String[dataJSON.size()];
+        final String[] Airports = new String[dataJSON.size()];
+        for(int i = 0; i < dataJSON.size(); i++) {
+            IATACODES[i] = dataJSON.get(i).get("iata").toString();
+            Airports[i] =  dataJSON.get(i).get("name").toString();
+            airportCodes.put(Airports[i], IATACODES[i]);
+        }
+        ArrayAdapter<String> adapter1 =
+                new ArrayAdapter<String>(getActivity(),android.R.layout.simple_dropdown_item_1line,IATACODES);
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(getActivity(),android.R.layout.simple_dropdown_item_1line,Airports);
+        originText = (AutoCompleteTextView) theview.findViewById(R.id.flight_search_origin);
+        destinationText = (AutoCompleteTextView) theview.findViewById(R.id.flight_search_destination);
+        originText.setAdapter(adapter);
+        destinationText.setAdapter(adapter);
+
         return theview;
     }
 
@@ -102,13 +130,13 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
 
-        if(originLocation.getSelectedItem().toString().equals(destLocation.getSelectedItem().toString())) {
-            Toast toast = Toast.makeText(getContext(), "The destination and origin cannot be the same.", Toast.LENGTH_LONG);
-            toast.show();
+       if(originText.getText().toString().equals(destinationText.getText().toString())) {
+            originText.setError("Destination and Origin cannot be the same.");
 
         } else {
-            mListener.onSearchSubmit(originLocation.getSelectedItem().toString(), destLocation.getSelectedItem().toString());
-        }
+
+           mListener.onSearchSubmit(airportCodes.get(originText.getText().toString()), airportCodes.get(destinationText.getText().toString()));
+       }
 
 
     }
