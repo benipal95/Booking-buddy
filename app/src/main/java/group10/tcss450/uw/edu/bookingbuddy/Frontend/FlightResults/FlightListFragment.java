@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.FlightSearchTask;
@@ -48,6 +49,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         {
             origin = getArguments().getString("ORIGIN");
             dest = getArguments().getString("DESTI");
+            int sorting = getArguments().getInt("SORT");
             AsyncTask<String, Void, String> task = null;
 
 
@@ -57,7 +59,8 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             Context context = getContext();
 
 
-            task = new FlightSearchTask(context, recyclerView, tx_results);
+
+            task = new FlightSearchTask(context, recyclerView, tx_results, sorting);
             //task.initializeTask(context, recyclerView, tx_results);
             task.execute(origin, dest);
 

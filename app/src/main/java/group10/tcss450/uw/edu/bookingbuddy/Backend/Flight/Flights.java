@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Backend;
+package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 
 import android.support.annotation.NonNull;
 
@@ -47,6 +47,13 @@ public class Flights implements Comparable<Flights>
         mValue = Double.parseDouble(theValue);
     }
 
+    /**
+     * This changes the flag that sets how compareTo is run. It is intended for use with sorting
+     * algorithms. Will throw an IllegalArgumentException if the value you attempt to set the
+     * flag to is not recognized.
+     *
+     * @param newSort the new value to set the sorting/comparable flag to
+     */
     public void setSortBy(int newSort)
     {
         if(newSort >= 0 && newSort <= 1)
@@ -59,16 +66,34 @@ public class Flights implements Comparable<Flights>
         }
     }
 
+    /**
+     * Outputs raw, unformatted date integer representing the departure date.
+     * Suitable for internal backend use.
+     *
+     * @return unformatted integer
+     */
     public int getRawDepartDate()
     {
         return mDepartDate;
     }
 
+    /**
+     * Outputs raw, unformatted date integer representing the return date.
+     * Suitable for internal backend use.
+     *
+     * @return unformatted integer
+     */
     public int getRawReturnDate()
     {
         return mReturnDate;
     }
 
+    /**
+     * Outputs raw, unformatted double representing the ticket price for this flight.
+     * Suitable for internal backend use.
+     *
+     * @return unformatted double
+     */
     public double getRawValue()
     {
         return mValue;
@@ -76,28 +101,43 @@ public class Flights implements Comparable<Flights>
 
     public String getOrigin()
     {
-        return mOrigin;
+        return "Origin Airport: " + mOrigin;
     }
 
     public String getDestination()
     {
-        return mDestination;
+        return "Destination Airport: " + mDestination;
     }
 
+    /**
+     * Outputs formatted string suitable for display to the user.
+     *
+     * @return "Departure Date: MM/DD/YYYY"
+     */
     public String getNiceDepartDate()
     {
-        return mNiceDepartDate;
+        return "Departure Date: " + mNiceDepartDate;
     }
 
+    /**
+     * Outputs formatted string suitable for display to the user.
+     *
+     * @return "Return Date: MM/DD/YYYY"
+     */
     public String getNiceReturnDate()
     {
-        return mNiceReturnDate;
+        return "Return Date: " + mNiceReturnDate;
     }
 
+    /**
+     * Outputs formatted string suitable for display to the user.
+     *
+     * @return "Ticket Price: $###.##"
+     */
     public String getNiceValue()
     {
         String output = Double.toString(mValue);
-        output = "$" + output;
+        output = "Ticket Price: $" + output;
         return output;
     }
 

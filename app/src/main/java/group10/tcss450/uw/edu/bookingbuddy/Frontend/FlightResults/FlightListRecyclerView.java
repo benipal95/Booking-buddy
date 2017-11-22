@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.Flights;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 
@@ -21,13 +23,13 @@ import group10.tcss450.uw.edu.bookingbuddy.R;
 public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyclerView.ViewHolder>
 {
 
-    private final List<HashMap> mValues;
+    private final List<Flights> mValues;
 
     /**
      * Constructor that accepts a hashmap containing flight data.
      * @param mValues
      */
-    public FlightListRecyclerView(List<HashMap> mValues) {
+    public FlightListRecyclerView(ArrayList<Flights> mValues) {
         this.mValues = mValues;
     }
     //private final OnListFragmentInteractionListener mListener;
@@ -58,12 +60,19 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        HashMap<String, String> hashData = mValues.get(position);
+        /*HashMap<String, String> hashData = mValues.get(position);
         holder.mDepartDate.setText(hashData.get("depart_date"));
         holder.mReturnDate.setText(hashData.get("return_date"));
         holder.mValue.setText(hashData.get("value"));
         holder.mOrigin.setText(hashData.get("origin"));
-        holder.mDestination.setText(hashData.get("destination"));
+        holder.mDestination.setText(hashData.get("destination"));*/
+
+        Flights flight = mValues.get(position);
+        holder.mDepartDate.setText(flight.getNiceDepartDate());
+        holder.mReturnDate.setText(flight.getNiceReturnDate());
+        holder.mValue.setText(flight.getNiceValue());
+        holder.mOrigin.setText(flight.getOrigin());
+        holder.mDestination.setText(flight.getDestination());
     }
 
     /**

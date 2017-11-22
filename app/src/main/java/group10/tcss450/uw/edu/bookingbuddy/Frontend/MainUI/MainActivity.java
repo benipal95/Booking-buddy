@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
@@ -160,9 +162,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSearchSubmit(String origin, String destination) {
         FlightListFragment listFrag = new FlightListFragment();
+        RadioButton fare = findViewById(R.id.rb_fare_sort);
+        RadioButton date = findViewById(R.id.rb_date_sort);
+        int sorting = 0;
+
+        /*
+         * In order to determine the sorting method, you'll need to do checks on
+         * which radio button got checked.
+         */
+        if(fare.isChecked())
+            sorting = 0;
+        else if(date.isChecked())
+            sorting = 1;
+        //int sorting = sortingGroup.getCheckedRadioButtonId();
         Bundle args = new Bundle();
         args.putSerializable("ORIGIN", origin);
         args.putSerializable("DESTI", destination);
+        args.putSerializable("SORT", sorting);
 
         listFrag.setArguments(args);
         android.support.v4.app.FragmentTransaction trans = getSupportFragmentManager()
