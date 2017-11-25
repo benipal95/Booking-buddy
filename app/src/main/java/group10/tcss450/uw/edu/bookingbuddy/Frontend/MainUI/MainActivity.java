@@ -1,7 +1,9 @@
 package group10.tcss450.uw.edu.bookingbuddy.Frontend.MainUI;
 
+
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         if(savedInstanceState == null) {
             if (findViewById(R.id.fragmentContainer) != null) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragmentContainer, new StartupFragment())
+                        .add(R.id.fragmentContainer, new StartupFragment(), "startup_frag")
                         .commit();
             }
         }
@@ -78,11 +80,25 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
+        //Gets the current fragment
+        Fragment f =  getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(true){
+        }
+        Log.d("VISIBLE",f.getClass().toString());
+
+        //checks if it is of the type we want to do something with
+        if (f instanceof FlightSearchFragment) {
+                toggle.setDrawerIndicatorEnabled(false);
+                super.onBackPressed();
+        }
+        else {
             super.onBackPressed();
         }
+
+        //add code
     }
 
     /**
