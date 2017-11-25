@@ -168,6 +168,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         Collections.sort(dataJSON);
 
         adapter = new FlightListRecyclerView(dataJSON, email);
+        mRecyclerView.setAdapter(adapter);
 
         Integer[] stockArr = new Integer[sb.size()];
         stockArr = sb.toArray(stockArr);

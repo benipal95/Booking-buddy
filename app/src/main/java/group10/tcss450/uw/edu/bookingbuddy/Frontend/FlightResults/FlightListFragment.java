@@ -87,7 +87,6 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         View searchView = inflater.inflate(R.layout.fragment_flight_list, container, false);
        // Button graphButton = (Button) searchView.findViewById(R.id.graph_submit);
         //graphButton.setOnClickListener(this);
-        View searchView2 = inflater.inflate(R.layout.list_recycler_layout, container, false);
         return searchView;
     }
 
