@@ -38,14 +38,15 @@ import static android.content.ContentValues.TAG;
 public class FlightSearchTask extends AsyncTask<String, Void, String>
 {
     private static final String URL_FIRST = "http://api.travelpayouts.com/v2/prices/latest?currency=usd&period_type=year&page=1&limit=10&origin=";
+    //private static final String URL_FIRST = "http://api.travelpayouts.com/v1/prices/cheap?currency=usd&origin=";
     private static final String URL_MID = "&destination=";
-    private static final String URL_LAST = "&show_to_affiliates=true&sorting=price&trip_class=0&token=9f0202d35e6767803ce5e453f702e6f6";
+    private static final String URL_LAST = "&token=9f0202d35e6767803ce5e453f702e6f6";
     private ArrayList<Integer> sb = new ArrayList<>();
     ArrayList<Flights> dataJSON;
     RecyclerView mRecyclerView;
     TextView mTx_results;
     Context mContext;
-    String email;
+    String mEmail;
     private int mSortOption;
     //Flights mFlights;
 
@@ -167,8 +168,9 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         //dataJSON.sort();
         Collections.sort(dataJSON);
 
-        adapter = new FlightListRecyclerView(dataJSON, email);
-
+        adapter = new FlightListRecyclerView(dataJSON, mEmail);
+        mRecyclerView.setAdapter(adapter);
+        //adapter.
         Integer[] stockArr = new Integer[sb.size()];
         stockArr = sb.toArray(stockArr);
         //TextView tx_results = getActivity().findViewById(R.id.tx_flight_list);
@@ -185,7 +187,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         mRecyclerView = theRecycler;
         mTx_results = theTextView;
         mSortOption = sortOption;
-        this.email = email;
+        mEmail = email;
     }
 
 }

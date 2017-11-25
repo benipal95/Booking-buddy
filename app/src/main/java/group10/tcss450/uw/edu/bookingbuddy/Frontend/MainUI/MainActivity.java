@@ -1,9 +1,12 @@
 package group10.tcss450.uw.edu.bookingbuddy.Frontend.MainUI;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     ActionBarDrawerToggle toggle;
     private String userEmail;
+    private SharedPreferences mPrefs;
 
     /**
      * This method will be called when the activity is created. It will instantiate and create
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,11 +67,22 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if(savedInstanceState == null) {
-            if (findViewById(R.id.fragmentContainer) != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragmentContainer, new StartupFragment(), "startup_frag")
-                        .commit();
+        if (mPrefs.getInt(getString(R.string.LOGIN_STATUS), 0) == 1) {
+            if (savedInstanceState == null) {
+                if (findViewById(R.id.fragmentContainer) != null) {
+                    openDisplayScreen();
+                    toggle.setDrawerIndicatorEnabled(true);
+                }
+            }
+        }
+        else
+        {
+            if (savedInstanceState == null) {
+                if (findViewById(R.id.fragmentContainer) != null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragmentContainer, new StartupFragment(), "startup_frag")
+                            .commit();
+                }
             }
         }
 
@@ -158,9 +176,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.logout) {
             if (findViewById(R.id.fragmentContainer) != null)
             {
+                saveToSharedPrefs(0);
                 toggle.setDrawerIndicatorEnabled(false);
+                FragmentManager manager = getSupportFragmentManager();
+                if (manager.getBackStackEntryCount() > 0) {
+                    FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+                    manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, new StartupFragment()).addToBackStack(null)
+                        .replace(R.id.fragmentContainer, new StartupFragment())//.addToBackStack(null)
                         .commit();
             }
         }
@@ -248,13 +272,19 @@ public class MainActivity extends AppCompatActivity
      * it will create a new display screen.
      */
     public void openDisplayScreen() {
+        saveToSharedPrefs(1);
         toggle.setDrawerIndicatorEnabled(true);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, new FlightSearchFragment())
-                .addToBackStack(null);
+                .replace(R.id.fragmentContainer, new FlightSearchFragment());
+                //.addToBackStack(null);
         transaction.commit();
 
+    }
+
+    private void saveToSharedPrefs(int theStatus)
+    {
+        mPrefs.edit().putInt(getString(R.string.LOGIN_STATUS), theStatus).apply();
     }
 
     @Override
