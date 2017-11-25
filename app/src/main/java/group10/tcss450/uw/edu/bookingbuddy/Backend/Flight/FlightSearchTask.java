@@ -166,10 +166,8 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         }
         //dataJSON.sort();
         Collections.sort(dataJSON);
-        adapter = new FlightListRecyclerView(dataJSON, email);
-        //adapter.setClickListener(this);
-        mRecyclerView.setAdapter(adapter);
 
+        adapter = new FlightListRecyclerView(dataJSON, email);
 
         Integer[] stockArr = new Integer[sb.size()];
         stockArr = sb.toArray(stockArr);
@@ -179,7 +177,9 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
 
     }
 
+
     private void initializeTask(Context theContext, RecyclerView theRecycler, TextView theTextView, int sortOption, String email)
+
     {
         mContext = theContext;
         mRecyclerView = theRecycler;

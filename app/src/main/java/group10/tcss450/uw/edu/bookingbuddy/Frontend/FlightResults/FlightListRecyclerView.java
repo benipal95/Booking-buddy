@@ -73,7 +73,6 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         holder.mOrigin.setText(hashData.get("origin"));
         holder.mDestination.setText(hashData.get("destination"));*/
 
-
         Flights flight = mValues.get(position);
         holder.mDepartDate.setText(flight.getNiceDepartDate());
         holder.mReturnDate.setText(flight.getNiceReturnDate());

@@ -52,6 +52,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             origin = getArguments().getString("ORIGIN");
             dest = getArguments().getString("DESTI");
             int sorting = getArguments().getInt("SORT");
+
             String email = getArguments().getString("email");
             AsyncTask<String, Void, String> task = null;
 
@@ -64,6 +65,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
 
 
             task = new FlightSearchTask(context, recyclerView, tx_results, sorting, email);
+
             //task.initializeTask(context, recyclerView, tx_results);
             task.execute(origin, dest);
 

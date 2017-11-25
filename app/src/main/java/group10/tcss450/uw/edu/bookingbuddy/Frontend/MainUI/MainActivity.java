@@ -198,7 +198,6 @@ public class MainActivity extends AppCompatActivity
         args.putSerializable("SORT", sorting);
         args.putSerializable("email", userEmail);
 
-
         listFrag.setArguments(args);
         android.support.v4.app.FragmentTransaction trans = getSupportFragmentManager()
                 .beginTransaction()
