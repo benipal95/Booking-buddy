@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Frontend.Login;
+package group10.tcss450.uw.edu.bookingbuddy.Frontend.Register;
 
 import android.content.Context;
 import android.os.AsyncTask;

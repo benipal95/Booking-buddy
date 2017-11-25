@@ -2,14 +2,20 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.Flights;
+import group10.tcss450.uw.edu.bookingbuddy.Backend.User.SaveFlightTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 
@@ -21,14 +27,16 @@ import group10.tcss450.uw.edu.bookingbuddy.R;
 public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyclerView.ViewHolder>
 {
 
-    private final List<HashMap> mValues;
+    private final List<Flights> mValues;
+    private final String userEmail;
 
     /**
      * Constructor that accepts a hashmap containing flight data.
      * @param mValues
      */
-    public FlightListRecyclerView(List<HashMap> mValues) {
+    public FlightListRecyclerView(ArrayList<Flights> mValues, String email) {
         this.mValues = mValues;
+        this.userEmail = email;
     }
     //private final OnListFragmentInteractionListener mListener;
     @Override
@@ -58,13 +66,25 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        HashMap<String, String> hashData = mValues.get(position);
+        /*HashMap<String, String> hashData = mValues.get(position);
         holder.mDepartDate.setText(hashData.get("depart_date"));
         holder.mReturnDate.setText(hashData.get("return_date"));
         holder.mValue.setText(hashData.get("value"));
         holder.mOrigin.setText(hashData.get("origin"));
-        holder.mDestination.setText(hashData.get("destination"));
+        holder.mDestination.setText(hashData.get("destination"));*/
+
+
+        Flights flight = mValues.get(position);
+        holder.mDepartDate.setText(flight.getNiceDepartDate());
+        holder.mReturnDate.setText(flight.getNiceReturnDate());
+        holder.mValue.setText(flight.getNiceValue());
+        holder.mOrigin.setText(flight.getOrigin());
+        holder.mDestination.setText(flight.getDestination());
+
+        holder.saveFlightButton.setTag(position);
     }
+
+
 
     /**
      * This method will return the number of items in the recylcer view.
@@ -87,6 +107,7 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         public final TextView mValue;
         public final TextView mOrigin;
         public final TextView mDestination;
+        public final Button saveFlightButton;
 
 
         /**
@@ -102,6 +123,23 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
             mValue = itemView.findViewById(R.id.flight_cost);
             mOrigin = itemView.findViewById(R.id.flight_origin);
             mDestination = itemView.findViewById(R.id.flight_dest);
+            saveFlightButton = itemView.findViewById(R.id.save_flight_button);
+            saveFlightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String origin = mOrigin.getText().toString();
+                    String dest = mDestination.getText().toString();
+                    String dept = mDepartDate.getText().toString();
+                    String ret_date = mReturnDate.getText().toString();
+                    String price = mValue.getText().toString();
+                    SaveFlightTask saveFlight = new SaveFlightTask();
+                    Log.d("EMAIL", userEmail);
+                    saveFlight.execute(userEmail,origin,dest,dept,ret_date,price);
+                    saveFlightButton.setEnabled(false);
+
+
+                }
+            });
         }
     }
 }

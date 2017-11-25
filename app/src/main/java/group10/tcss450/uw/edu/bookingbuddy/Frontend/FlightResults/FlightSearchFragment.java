@@ -30,11 +30,13 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     private AutoCompleteTextView destinationText;
     private AutoCompleteTextView originText;
     private OnSearchSubmitListener mListener;
+    private String usersEmail;
 
     /**
      * Empty constructor.
      */
     public FlightSearchFragment() {
+
         // Required empty public constructor
     }
 
@@ -54,6 +56,7 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         View theview = inflater.inflate(R.layout.fragment_flight_search, container, false);
         Button thebutton = (Button) theview.findViewById(R.id.b_submit);
         thebutton.setOnClickListener(this);
+        Bundle args = getArguments();
 
        // destLocation.setAdapter(adapter);
      //   originLocation.setAdapter(adapter);

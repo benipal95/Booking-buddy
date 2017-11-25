@@ -240,7 +240,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             }
 
             else if(result.equals("found")) {
-                    mListener.loginFragmentInteraction(true, true, null, null);
+                    mListener.loginFragmentInteraction(true, true, null,loginUsername.getText().toString());
             } else if(result.equals("verification needed")) {
                 Random rand = new Random();
                 int randomGen = rand.nextInt(2000) + 1000;

@@ -10,7 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.FlightSearchTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
@@ -28,7 +31,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     private static Integer[] graphArr;
     private static String origin;
     private static String dest;
-
+    private RecyclerView recyclerView;
     /**
      * Empty Constructor
      */
@@ -48,16 +51,19 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         {
             origin = getArguments().getString("ORIGIN");
             dest = getArguments().getString("DESTI");
+            int sorting = getArguments().getInt("SORT");
+            String email = getArguments().getString("email");
             AsyncTask<String, Void, String> task = null;
 
 
-            RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
+            recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
 
             TextView tx_results = getActivity().findViewById(R.id.tx_flight_list);
             Context context = getContext();
 
 
-            task = new FlightSearchTask(context, recyclerView, tx_results);
+
+            task = new FlightSearchTask(context, recyclerView, tx_results, sorting, email);
             //task.initializeTask(context, recyclerView, tx_results);
             task.execute(origin, dest);
 
@@ -79,6 +85,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         View searchView = inflater.inflate(R.layout.fragment_flight_list, container, false);
        // Button graphButton = (Button) searchView.findViewById(R.id.graph_submit);
         //graphButton.setOnClickListener(this);
+        View searchView2 = inflater.inflate(R.layout.list_recycler_layout, container, false);
         return searchView;
     }
 

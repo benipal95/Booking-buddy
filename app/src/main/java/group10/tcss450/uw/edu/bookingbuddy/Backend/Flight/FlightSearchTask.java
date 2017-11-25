@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListRecyclerView;
@@ -39,16 +41,19 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
     private static final String URL_MID = "&destination=";
     private static final String URL_LAST = "&show_to_affiliates=true&sorting=price&trip_class=0&token=9f0202d35e6767803ce5e453f702e6f6";
     private ArrayList<Integer> sb = new ArrayList<>();
-    ArrayList<HashMap<String, String>> dataJSON;
+    ArrayList<Flights> dataJSON;
     RecyclerView mRecyclerView;
     TextView mTx_results;
     Context mContext;
+    String email;
+    private int mSortOption;
+    //Flights mFlights;
 
 
-    public FlightSearchTask(Context theContext, RecyclerView theRecycler, TextView theTextView)
+    public FlightSearchTask(Context theContext, RecyclerView theRecycler, TextView theTextView, int sortOption, String email)
     {
         super();
-        initializeTask(theContext, theRecycler, theTextView);
+        initializeTask(theContext, theRecycler, theTextView, sortOption, email);
     }
 
     /**
@@ -98,17 +103,22 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
                     String origin = "Origin Airport: " + d.getString("origin");
                     String destination = "Destination Airport: " + d.getString("destination");
 
+                    Flights flight = new Flights(d.getString("depart_date"),
+                            d.getString("return_date"),
+                            d.getString("value"),
+                            d.getString("origin"),
+                            d.getString("destination"));
                     // add strings to hashmap
-                    HashMap<String, String> hashData = new HashMap<>();
+                    /*HashMap<String, String> hashData = new HashMap<>();
                     hashData.put("depart_date", depart_date);
                     hashData.put("return_date", return_date);
                     hashData.put("value", value);
                     hashData.put("origin", origin);
-                    hashData.put("destination", destination);
+                    hashData.put("destination", destination);*/
 
                     //add hashmap back to the HashMap ArrayList
-                    dataJSON.add(hashData);
-
+                    flight.setSortBy(mSortOption);
+                    dataJSON.add(flight);
                 }
 
             } catch (final JSONException e) {
@@ -154,7 +164,9 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
             mTx_results.setText(result);
             return;
         }
-        adapter = new FlightListRecyclerView((ArrayList) dataJSON);
+        //dataJSON.sort();
+        Collections.sort(dataJSON);
+        adapter = new FlightListRecyclerView(dataJSON, email);
         //adapter.setClickListener(this);
         mRecyclerView.setAdapter(adapter);
 
@@ -167,11 +179,13 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
 
     }
 
-    private void initializeTask(Context theContext, RecyclerView theRecycler, TextView theTextView)
+    private void initializeTask(Context theContext, RecyclerView theRecycler, TextView theTextView, int sortOption, String email)
     {
         mContext = theContext;
         mRecyclerView = theRecycler;
         mTx_results = theTextView;
+        mSortOption = sortOption;
+        this.email = email;
     }
 
 }
