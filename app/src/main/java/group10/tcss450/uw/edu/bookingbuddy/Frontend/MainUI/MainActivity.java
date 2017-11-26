@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity
         RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener, ResetPasswordFragment.resetFragmentInteractionListener,EnterNewPasswordFragment.EnterNewPasswordFragmentInteractionListener,
         VerifyEmailFragment.VerifyEmailFragmentInteractionListener{
 
-    ActionBarDrawerToggle toggle;
+    ActionBarDrawerToggle mToggle;
+    DrawerLayout mDrawer;
     private String userEmail;
     private SharedPreferences mPrefs;
 
@@ -59,11 +60,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToggle = new ActionBarDrawerToggle(
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.setDrawerListener(mToggle);
+        mToggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -71,7 +72,14 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState == null) {
                 if (findViewById(R.id.fragmentContainer) != null) {
                     openDisplayScreen();
-                    toggle.setDrawerIndicatorEnabled(true);
+                    mToggle.setDrawerIndicatorEnabled(true);
+                    if(mToggle.isDrawerIndicatorEnabled())
+                    {
+                        Log.d("DRAWER_STATUS", "true");
+                    }
+                    else
+                        Log.d("DRAWER_STATUS", "false");
+
                 }
             }
         }
@@ -84,10 +92,12 @@ public class MainActivity extends AppCompatActivity
                             .commit();
                 }
             }
+            //hides the hamburger button for nav menu until after the user has logged in
+            mToggle.setDrawerIndicatorEnabled(false);
+            mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
 
-        //hides the hamburger button for nav menu until after the user has logged in
-        toggle.setDrawerIndicatorEnabled(false);
+
 
     }
 
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
         //checks if it is of the type we want to do something with
         if (f instanceof FlightSearchFragment) {
-                toggle.setDrawerIndicatorEnabled(false);
+                mToggle.setDrawerIndicatorEnabled(false);
                 super.onBackPressed();
         }
         else {
@@ -177,7 +187,8 @@ public class MainActivity extends AppCompatActivity
             if (findViewById(R.id.fragmentContainer) != null)
             {
                 saveToSharedPrefs(0);
-                toggle.setDrawerIndicatorEnabled(false);
+                mToggle.setDrawerIndicatorEnabled(false);
+                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 FragmentManager manager = getSupportFragmentManager();
                 if (manager.getBackStackEntryCount() > 0) {
                     FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
@@ -273,7 +284,8 @@ public class MainActivity extends AppCompatActivity
      */
     public void openDisplayScreen() {
         saveToSharedPrefs(1);
-        toggle.setDrawerIndicatorEnabled(true);
+        mToggle.setDrawerIndicatorEnabled(true);
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, new FlightSearchFragment());
