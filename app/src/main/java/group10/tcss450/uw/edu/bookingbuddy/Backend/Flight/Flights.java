@@ -8,13 +8,16 @@ import android.support.annotation.NonNull;
 
 public class Flights implements Comparable<Flights>
 {
-    private int mDepartDate;
-    private int mReturnDate;
+    private long mDepartDate;
+    private long mReturnDate;
     private double mValue;
     private String mOrigin;
     private String mDestination;
     private String mNiceDepartDate;
     private String mNiceReturnDate;
+    private String mAirline;
+    private int mFlightNumber;
+    private final int mFormatType;
 
     /**
      * sortBy is used to change up how the compareTo implementation will work.
@@ -34,15 +37,33 @@ public class Flights implements Comparable<Flights>
         mNiceDepartDate = theDepartDate;
         mNiceReturnDate = theReturnDate;
         sortBy = 0;
+        mFormatType = 0;
+    }
+
+    public Flights(String theDepartDate, String theReturnDate, String theValue, String theAirline, int theFlightNumber)
+    {
+        initializationHelper(theReturnDate, theDepartDate, theValue);
+        mAirline = theAirline;
+        mFlightNumber = theFlightNumber;
+        mNiceDepartDate = theDepartDate;
+        mNiceReturnDate = theReturnDate;
+        sortBy = 0;
+        mFormatType = 1;
     }
 
     private void initializationHelper(String theDepartDate, String theReturnDate, String theValue)
     {
         String tmp = theDepartDate.replaceAll("-", "");
-        mDepartDate = Integer.parseInt(tmp);
+        tmp = tmp.replaceAll(":", "");
+        tmp = tmp.replaceAll("T", "");
+        tmp = tmp.replaceAll("Z", "");
+        mDepartDate = Long.parseLong(tmp);
 
         tmp = theReturnDate.replaceAll("-", "");
-        mReturnDate = Integer.parseInt(tmp);
+        tmp = tmp.replaceAll(":", "");
+        tmp = tmp.replaceAll("T", "");
+        tmp = tmp.replaceAll("Z", "");
+        mReturnDate = Long.parseLong(tmp);
 
         mValue = Double.parseDouble(theValue);
     }
@@ -72,7 +93,7 @@ public class Flights implements Comparable<Flights>
      *
      * @return unformatted integer
      */
-    public int getRawDepartDate()
+    public long getRawDepartDate()
     {
         return mDepartDate;
     }
@@ -83,7 +104,7 @@ public class Flights implements Comparable<Flights>
      *
      * @return unformatted integer
      */
-    public int getRawReturnDate()
+    public long getRawReturnDate()
     {
         return mReturnDate;
     }
@@ -141,6 +162,31 @@ public class Flights implements Comparable<Flights>
         return output;
     }
 
+    public int getFormatType()
+    {
+        return mFormatType;
+    }
+
+    public String getNiceAirline()
+    {
+        return "Airline Code: " + mAirline;
+    }
+
+    public String getRawAirline()
+    {
+        return mAirline;
+    }
+
+    public String getNiceFlightNo()
+    {
+        return "Flight Number: " + mFlightNumber;
+    }
+
+    public int getRawFlightNo()
+    {
+        return mFlightNumber;
+    }
+
     @Override
     public int compareTo(@NonNull Flights flights) {
         int result = 0;
@@ -155,7 +201,7 @@ public class Flights implements Comparable<Flights>
         }
         else if (sortBy == 1)
         {
-            result = this.mDepartDate - flights.mDepartDate;
+            result = (int) (this.mDepartDate - flights.mDepartDate);
         }
 
         return result;
