@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState == null) {
                 if (findViewById(R.id.fragmentContainer) != null) {
                     openDisplayScreen();
+                    userEmail = mPrefs.getString(getString(R.string.USER_EMAIL), "");
+                    Log.d("EMAIL", "mPrefs.email="+userEmail);
                     mToggle.setDrawerIndicatorEnabled(true);
                     if(mToggle.isDrawerIndicatorEnabled())
                     {
@@ -187,6 +189,7 @@ public class MainActivity extends AppCompatActivity
             if (findViewById(R.id.fragmentContainer) != null)
             {
                 saveToSharedPrefs(0);
+                saveToSharedPrefs("");
                 mToggle.setDrawerIndicatorEnabled(false);
                 mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 FragmentManager manager = getSupportFragmentManager();
@@ -306,10 +309,16 @@ public class MainActivity extends AppCompatActivity
         mPrefs.edit().putInt(getString(R.string.LOGIN_STATUS), theStatus).apply();
     }
 
+    private void saveToSharedPrefs(String theEmail)
+    {
+        mPrefs.edit().putString(getString(R.string.USER_EMAIL), theEmail).apply();
+    }
+
     @Override
     public void loginFragmentInteraction(Boolean loggedIn, Boolean verified, String verificationCode, String email) {
         userEmail = email;
         if(loggedIn && verified) {
+            saveToSharedPrefs(userEmail);
             openDisplayScreen();
         } else if(!loggedIn && !verified) {
 

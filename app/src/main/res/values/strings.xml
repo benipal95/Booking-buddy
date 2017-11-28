@@ -16,6 +16,7 @@
 
     <string name="SHARED_PREFS">edu.uw.tcss450.BookingBuddy.PREFS</string>
     <string name="LOGIN_STATUS">login_status</string>
+    <string name="USER_EMAIL">user_email</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
