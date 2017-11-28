@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
@@ -230,10 +231,24 @@ public class MainActivity extends AppCompatActivity
         else if(date.isChecked())
             sorting = 1;
         //int sorting = sortingGroup.getCheckedRadioButtonId();
+        String departureDate, returnDate;
+        TextView tx1 = findViewById(R.id.tx_depart_date);
+        TextView tx2 = findViewById(R.id.tx_return_date);
+        departureDate = tx1.getText().toString();
+        returnDate = tx2.getText().toString();
+        if(!departureDate.startsWith("Tap to Set")) {
+            departureDate = departureDate.substring(11, 18);
+            Log.d("SEARCH_SUBMIT.DEPART", departureDate);
+            returnDate = returnDate.substring(8, 15);
+            Log.d("SEARCH_SUBMIT.RETURN", returnDate);
+        }
+
         Bundle args = new Bundle();
         args.putSerializable("ORIGIN", origin);
         args.putSerializable("DESTI", destination);
         args.putSerializable("SORT", sorting);
+        args.putSerializable("DEPART", departureDate);
+        args.putSerializable("RETURN", returnDate);
         args.putSerializable("email", userEmail);
 
         listFrag.setArguments(args);

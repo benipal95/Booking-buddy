@@ -7,6 +7,7 @@ package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListRecyclerView;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
+import group10.tcss450.uw.edu.bookingbuddy.R;
 
 import static android.content.ContentValues.TAG;
 
@@ -75,9 +78,24 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         dataJSON = new ArrayList<>();
         String theOrigin = strings[0];
         String theDest = strings[1];
+        String departureDate = null;
+        String returnDate = null;
+        if(strings.length > 2)
+        {
+            departureDate = strings[2];
+            returnDate = strings[3];
+        }
 
         try {
-            URL urlObj = new URL(URL_CHEAP_START + theOrigin + URL_MID + theDest + URL_CHEAP_END);
+            URL urlObj;
+            if (departureDate == null) {
+                urlObj = new URL(URL_CHEAP_START + theOrigin + URL_MID + theDest + URL_CHEAP_END);
+            }
+            else
+            {
+                urlObj = new URL(URL_CHEAP_START + theOrigin + URL_MID + theDest + URL_CHEAP_DEPART + departureDate + URL_CHEAP_RETURN + returnDate + URL_CHEAP_END);
+            }
+            Log.d("TASK_URL", urlObj.toString());
 
             connection = (HttpURLConnection) urlObj.openConnection();
             InputStream content = connection.getInputStream();
@@ -93,7 +111,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
                 connection.disconnect();
         }
 
-        if (response != null) {
+        if (response != null && !response.contains("\"data\":{}")) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 JSONObject data = jsonObject.getJSONObject("data");
@@ -139,6 +157,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
             }
         }
+
         //change the return statement to dataJSON.toString() to print out the Hashmap with all the data.
         return sb.toString();
 
@@ -176,6 +195,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
             AlertDialog alert = buildalert.create();
             alert.show();
             mTx_results.setText(result);
+
             return;
         }
         //dataJSON.sort();
