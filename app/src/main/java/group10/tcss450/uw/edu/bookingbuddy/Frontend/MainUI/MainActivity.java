@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -235,10 +236,10 @@ public class MainActivity extends AppCompatActivity
             sorting = 1;
         //int sorting = sortingGroup.getCheckedRadioButtonId();
         String departureDate, returnDate;
-        TextView tx1 = findViewById(R.id.tx_depart_date);
-        TextView tx2 = findViewById(R.id.tx_return_date);
-        departureDate = tx1.getText().toString();
-        returnDate = tx2.getText().toString();
+        Button depart_button = findViewById(R.id.button_depart_date);
+        Button return_button = findViewById(R.id.button_return_date);
+        departureDate = depart_button.getText().toString();
+        returnDate = return_button.getText().toString();
         if(!departureDate.startsWith("Tap to Set")) {
             departureDate = departureDate.substring(11, 18);
             Log.d("SEARCH_SUBMIT.DEPART", departureDate);

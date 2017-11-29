@@ -63,10 +63,10 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         View theview = inflater.inflate(R.layout.fragment_flight_search, container, false);
         Button thebutton = (Button) theview.findViewById(R.id.b_submit);
         thebutton.setOnClickListener(this);
-        TextView tx1 = theview.findViewById(R.id.tx_depart_date);
-        TextView tx2 = theview.findViewById(R.id.tx_return_date);
-        tx1.setOnClickListener(this);
-        tx2.setOnClickListener(this);
+        Button departButton = theview.findViewById(R.id.button_depart_date);
+        Button returnButton = theview.findViewById(R.id.button_return_date);
+        departButton.setOnClickListener(this);
+        returnButton.setOnClickListener(this);
         Bundle args = getArguments();
 
        // destLocation.setAdapter(adapter);
@@ -143,18 +143,17 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
 
                 mListener.onSearchSubmit(airportCodes.get(originText.getText().toString()), airportCodes.get(destinationText.getText().toString()));
             }
-        }
-        else if(view.getId() == getActivity().findViewById(R.id.tx_depart_date).getId())
-        {
+        } else if(view.getId() == getActivity().findViewById(R.id.button_depart_date).getId()) {
+
             alert = new DepartureDatePickerFragment();
-        }
-        else if(view.getId() == getActivity().findViewById(R.id.tx_return_date).getId())
-        {
+
+        } else if(view.getId() == getActivity().findViewById(R.id.button_return_date).getId()) {
+
             alert = new ReturnDatePickerFragment();
         }
 
-        if(alert != null)
-        {
+        if(alert != null) {
+
             alert.show(getActivity().getSupportFragmentManager(), "launch");
         }
 
@@ -181,7 +180,7 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
             // Warning - month is 0 based.
             //Toast.makeText(getActivity(), "You picked " + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year,
             //        Toast.LENGTH_LONG).show();
-            TextView text = getActivity().findViewById(R.id.tx_depart_date);
+            TextView text = getActivity().findViewById(R.id.button_depart_date);
             if(monthOfYear < 9)
                 text.setText("Departure: " + year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth);
             else
@@ -209,7 +208,7 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
             // Warning - month is 0 based.
             //Toast.makeText(getActivity(), "You picked " + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year,
             //        Toast.LENGTH_LONG).show();
-            TextView text = getActivity().findViewById(R.id.tx_return_date);
+            TextView text = getActivity().findViewById(R.id.button_return_date);
             if(monthOfYear < 9)
                 text.setText("Return: " + year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth);
             else
