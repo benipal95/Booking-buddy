@@ -4,9 +4,11 @@ package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
  * Created by jjtowers on 11/17/2017.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -194,7 +196,10 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
 
             AlertDialog alert = buildalert.create();
             alert.show();
-            mTx_results.setText(result);
+            ((FragmentActivity) mContext).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new FlightSearchFragment())
+                    .addToBackStack(null).commit();
 
             return;
         }
