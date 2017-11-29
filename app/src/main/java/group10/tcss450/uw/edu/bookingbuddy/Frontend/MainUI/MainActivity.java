@@ -3,6 +3,7 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.MainUI;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
@@ -97,7 +99,8 @@ public class MainActivity extends AppCompatActivity
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
 
-
+        View v  = findViewById(R.id.fragmentContainer);
+        v.setBackgroundColor(Color.rgb(30,144,255));
 
     }
 

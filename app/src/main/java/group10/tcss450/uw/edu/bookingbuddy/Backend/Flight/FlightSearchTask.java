@@ -41,11 +41,11 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
     private static final String URL_MID = "&destination=";
     private static final String URL_LAST = "&show_to_affiliates=true&sorting=price&trip_class=0&token=9f0202d35e6767803ce5e453f702e6f6";
     private ArrayList<Integer> sb = new ArrayList<>();
-    ArrayList<Flights> dataJSON;
-    RecyclerView mRecyclerView;
-    TextView mTx_results;
-    Context mContext;
-    String email;
+    private ArrayList<Flights> dataJSON;
+    private RecyclerView mRecyclerView;
+    private TextView mTx_results;
+    private Context mContext;
+    private String email;
     private int mSortOption;
     //Flights mFlights;
 

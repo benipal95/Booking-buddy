@@ -32,6 +32,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     private static String origin;
     private static String dest;
     private RecyclerView recyclerView;
+    private String email;
     /**
      * Empty Constructor
      */
@@ -53,7 +54,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             dest = getArguments().getString("DESTI");
             int sorting = getArguments().getInt("SORT");
 
-            String email = getArguments().getString("email");
+            email = getArguments().getString("email");
             AsyncTask<String, Void, String> task = null;
 
 

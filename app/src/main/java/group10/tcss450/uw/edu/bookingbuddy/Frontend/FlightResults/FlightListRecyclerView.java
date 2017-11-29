@@ -132,7 +132,6 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
                     String ret_date = mReturnDate.getText().toString();
                     String price = mValue.getText().toString();
                     SaveFlightTask saveFlight = new SaveFlightTask();
-                    Log.d("EMAIL", userEmail);
                     saveFlight.execute(userEmail,origin,dest,dept,ret_date,price);
                     saveFlightButton.setEnabled(false);
 
