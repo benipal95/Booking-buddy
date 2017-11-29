@@ -74,11 +74,22 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         holder.mDestination.setText(hashData.get("destination"));*/
 
         Flights flight = mValues.get(position);
-        holder.mDepartDate.setText(flight.getNiceDepartDate());
-        holder.mReturnDate.setText(flight.getNiceReturnDate());
-        holder.mValue.setText(flight.getNiceValue());
-        holder.mOrigin.setText(flight.getOrigin());
-        holder.mDestination.setText(flight.getDestination());
+        if(flight.getFormatType() == 0)
+        {
+            holder.mDepartDate.setText(flight.getNiceDepartDate());
+            holder.mReturnDate.setText(flight.getNiceReturnDate());
+            holder.mValue.setText(flight.getNiceValue());
+            holder.mOrigin.setText(flight.getOrigin());
+            holder.mDestination.setText(flight.getDestination());
+        }
+        else if (flight.getFormatType() == 1)
+        {
+            holder.mDepartDate.setText(flight.getNiceDepartDate());
+            holder.mReturnDate.setText(flight.getNiceReturnDate());
+            holder.mValue.setText(flight.getNiceValue());
+            holder.mOrigin.setText(flight.getNiceAirline());
+            holder.mDestination.setText(flight.getNiceFlightNo());
+        }
 
         holder.saveFlightButton.setTag(position);
     }

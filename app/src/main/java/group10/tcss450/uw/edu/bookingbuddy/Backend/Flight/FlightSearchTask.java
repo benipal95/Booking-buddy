@@ -7,10 +7,12 @@ package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -28,6 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListRecyclerView;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
+import group10.tcss450.uw.edu.bookingbuddy.R;
 
 import static android.content.ContentValues.TAG;
 
@@ -38,6 +42,10 @@ import static android.content.ContentValues.TAG;
 public class FlightSearchTask extends AsyncTask<String, Void, String>
 {
     private static final String URL_FIRST = "http://api.travelpayouts.com/v2/prices/latest?currency=usd&period_type=year&page=1&limit=10&origin=";
+    private static final String URL_CHEAP_START = "http://api.travelpayouts.com/v1/prices/cheap?origin=";
+    private static final String URL_CHEAP_DEPART = "&depart_date=";
+    private static final String URL_CHEAP_RETURN = "&return_date=";
+    private static final String URL_CHEAP_END = "&currency=usd&token=9f0202d35e6767803ce5e453f702e6f6";
     private static final String URL_MID = "&destination=";
     private static final String URL_LAST = "&show_to_affiliates=true&sorting=price&trip_class=0&token=9f0202d35e6767803ce5e453f702e6f6";
     private ArrayList<Integer> sb = new ArrayList<>();
@@ -49,6 +57,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
     private int mSortOption;
     //Flights mFlights;
 
+    //http://api.travelpayouts.com/v1/prices/cheap?origin=MOW&destination=HKT&depart_date=2017-11&return_date=2017-12&token=PutHereYourToken
 
     public FlightSearchTask(Context theContext, RecyclerView theRecycler, TextView theTextView, int sortOption, String email)
     {
@@ -69,9 +78,24 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         dataJSON = new ArrayList<>();
         String theOrigin = strings[0];
         String theDest = strings[1];
+        String departureDate = null;
+        String returnDate = null;
+        if(strings.length > 2)
+        {
+            departureDate = strings[2];
+            returnDate = strings[3];
+        }
 
         try {
-            URL urlObj = new URL(URL_FIRST + theOrigin + URL_MID + theDest + URL_LAST);
+            URL urlObj;
+            if (departureDate == null) {
+                urlObj = new URL(URL_CHEAP_START + theOrigin + URL_MID + theDest + URL_CHEAP_END);
+            }
+            else
+            {
+                urlObj = new URL(URL_CHEAP_START + theOrigin + URL_MID + theDest + URL_CHEAP_DEPART + departureDate + URL_CHEAP_RETURN + returnDate + URL_CHEAP_END);
+            }
+            Log.d("TASK_URL", urlObj.toString());
 
             connection = (HttpURLConnection) urlObj.openConnection();
             InputStream content = connection.getInputStream();
@@ -87,27 +111,34 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
                 connection.disconnect();
         }
 
-        if (response != null) {
+        if (response != null && !response.contains("\"data\":{}")) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                JSONArray data = jsonObject.getJSONArray("data");
+                JSONObject data = jsonObject.getJSONObject("data");
+                String key = data.toString().substring(2,5);
+                Log.d("JSON_RESULTS", "key = " + key);
+                JSONObject data_actual = data.getJSONObject(key);
+                Log.d("JSON_RESULTS", "data = " + data.toString());
+                Log.d("JSON_RESULTS", "data_actual = " + data_actual.toString());
 
-                for(int i = 0; i < data.length(); i++) {
-                    JSONObject d = data.getJSONObject(i);
+                for(int i = 0; i < data_actual.length(); i++) {
+                    JSONObject d = data_actual.getJSONObject("" + i);
+                    Log.d("JSON_RESULTS", "d = " + d.toString());
                     // add the flight prices to Arraylist for the graph data
-                    sb.add(d.getInt("value"));
-                    // add values to Strings for hashmap
-                    String depart_date = "Departure Date: " + d.getString("depart_date");
-                    String return_date = "Return Date: " + d.getString("return_date");
-                    String value = "Ticket Price: $" + d.getString("value");
-                    String origin = "Origin Airport: " + d.getString("origin");
-                    String destination = "Destination Airport: " + d.getString("destination");
 
-                    Flights flight = new Flights(d.getString("depart_date"),
-                            d.getString("return_date"),
-                            d.getString("value"),
-                            d.getString("origin"),
-                            d.getString("destination"));
+                    sb.add(d.getInt("price"));
+                    // add values to Strings for hashmap
+                   // String depart_date = "Departure Date: " + d.getString("depart_at");
+                   // String return_date = "Return Date: " + d.getString("return_at");
+                   // String value = "Ticket Price: $" + d.getString("price");
+                   // String origin = "Airline: " + d.getString("airline");
+                   // String destination = "Flight Number: " + d.getInt("flight_number");
+
+                    Flights flight = new Flights(d.getString("departure_at"),
+                            d.getString("return_at"),
+                            d.getString("price"),
+                            d.getString("airline"),
+                            d.getInt("flight_number"));
                     // add strings to hashmap
                     /*HashMap<String, String> hashData = new HashMap<>();
                     hashData.put("depart_date", depart_date);
@@ -119,12 +150,14 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
                     //add hashmap back to the HashMap ArrayList
                     flight.setSortBy(mSortOption);
                     dataJSON.add(flight);
+
                 }
 
             } catch (final JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
             }
         }
+
         //change the return statement to dataJSON.toString() to print out the Hashmap with all the data.
         return sb.toString();
 
@@ -162,6 +195,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
             AlertDialog alert = buildalert.create();
             alert.show();
             mTx_results.setText(result);
+
             return;
         }
         //dataJSON.sort();
