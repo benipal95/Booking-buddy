@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.AirlineCodeParser;
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.IATACodeParser;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
@@ -78,6 +79,7 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         airportCodes = new HashMap();
         final String[] IATACODES = new String[dataJSON.size()];
         final String[] Airports = new String[dataJSON.size()];
@@ -86,6 +88,9 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
             Airports[i] =  dataJSON.get(i).get("name").toString();
             airportCodes.put(Airports[i], IATACODES[i]);
         }
+
+
+
         ArrayAdapter<String> adapter1 =
                 new ArrayAdapter<String>(getActivity(),android.R.layout.simple_dropdown_item_1line,IATACODES);
         ArrayAdapter<String> adapter =

@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListRecyclerView;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
@@ -57,6 +59,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
     private Context mContext;
     private String email;
     private int mSortOption;
+    HashMap<String, String> mAirlineCodes;
     //Flights mFlights;
 
     //http://api.travelpayouts.com/v1/prices/cheap?origin=MOW&destination=HKT&depart_date=2017-11&return_date=2017-12&token=PutHereYourToken
@@ -65,6 +68,17 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
     {
         super();
         initializeTask(theContext, theRecycler, theTextView, sortOption, email);
+    }
+
+    @Override
+    protected void onPreExecute()
+    {
+        AirlineCodeParser air_parse = new AirlineCodeParser(mContext);
+        try {
+            mAirlineCodes = air_parse.parseAirlineJSON();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -90,6 +104,16 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
 
         try {
             URL urlObj;
+
+
+            /*mAirlineCodes = new HashMap<>();
+            final String[] AIR_IATACODES = new String[AirlineJSON.size()];
+            final String[] Airlines = new String[AirlineJSON.size()];
+            for(int i = 0; i < AirlineJSON.size(); i++) {
+                AIR_IATACODES[i] = AirlineJSON.get(i).get("iata").toString();
+                Airlines[i] =  AirlineJSON.get(i).get("name").toString();
+                mAirlineCodes.put(AIR_IATACODES[i], Airlines[i]);
+            }*/
             if (departureDate == null) {
                 urlObj = new URL(URL_CHEAP_START + theOrigin + URL_MID + theDest + URL_CHEAP_END);
             }
@@ -135,12 +159,21 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
                    // String value = "Ticket Price: $" + d.getString("price");
                    // String origin = "Airline: " + d.getString("airline");
                    // String destination = "Flight Number: " + d.getInt("flight_number");
+                    String trueName = null;
+
+                    trueName = mAirlineCodes.get(d.getString("airline"));
+                    Log.d("TRUENAME", d.getString("airline"));
+                    if(trueName != null)
+                        Log.d("TRUENAME", trueName);
+                    else
+                        Log.d("TRUENAME", "NULL");
 
                     Flights flight = new Flights(d.getString("departure_at"),
                             d.getString("return_at"),
                             d.getString("price"),
                             d.getString("airline"),
-                            d.getInt("flight_number"));
+                            d.getInt("flight_number"),
+                            trueName);
                     // add strings to hashmap
                     /*HashMap<String, String> hashData = new HashMap<>();
                     hashData.put("depart_date", depart_date);

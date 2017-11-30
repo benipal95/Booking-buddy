@@ -1,6 +1,9 @@
 package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+
+import java.util.HashMap;
 
 /**
  * Created by jjtowers on 11/21/2017.
@@ -18,6 +21,7 @@ public class Flights implements Comparable<Flights>
     private String mAirline;
     private int mFlightNumber;
     private final int mFormatType;
+    private String mTrueName;
 
     /**
      * sortBy is used to change up how the compareTo implementation will work.
@@ -40,10 +44,11 @@ public class Flights implements Comparable<Flights>
         mFormatType = 0;
     }
 
-    public Flights(String theDepartDate, String theReturnDate, String theValue, String theAirline, int theFlightNumber)
+    public Flights(String theDepartDate, String theReturnDate, String theValue, String theAirline, int theFlightNumber, String theTrueName)
     {
         initializationHelper(theReturnDate, theDepartDate, theValue);
         mAirline = theAirline;
+        mTrueName = theTrueName;
         mFlightNumber = theFlightNumber;
         mNiceDepartDate = theDepartDate;
         mNiceReturnDate = theReturnDate;
@@ -169,7 +174,10 @@ public class Flights implements Comparable<Flights>
 
     public String getNiceAirline()
     {
-        return "Airline Code: " + mAirline;
+        if (mTrueName != null)
+            return "Airline: " + mTrueName;
+        else
+            return "Airline Code: " + mAirline;
     }
 
     public String getRawAirline()

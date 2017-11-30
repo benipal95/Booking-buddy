@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         View v  = findViewById(R.id.fragmentContainer);
-        v.setBackgroundColor(Color.rgb(30,144,255));
+        //v.setBackgroundColor(Color.rgb(30,144,255));
 
     }
 
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity
         Button return_button = findViewById(R.id.button_return_date);
         departureDate = depart_button.getText().toString();
         returnDate = return_button.getText().toString();
-        if(!departureDate.startsWith("Tap to Set")) {
+        if(!departureDate.startsWith("Pick")) {
             departureDate = departureDate.substring(11, 18);
             Log.d("SEARCH_SUBMIT.DEPART", departureDate);
             returnDate = returnDate.substring(8, 15);

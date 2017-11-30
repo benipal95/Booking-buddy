@@ -15,6 +15,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.AirlineCodeParser;
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.FlightSearchTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
@@ -70,7 +76,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             task = new FlightSearchTask(context, recyclerView, tx_results, sorting, email);
 
             //task.initializeTask(context, recyclerView, tx_results);
-            if (departureDate.startsWith("Tap to Set")) {
+            if (departureDate.startsWith("Pick")) {
                 task.execute(origin, dest);
             }
             else
