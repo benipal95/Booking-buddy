@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState == null) {
                 if (findViewById(R.id.fragmentContainer) != null) {
                     getSupportFragmentManager().beginTransaction()
-                            .add(R.id.fragmentContainer, new StartupFragment(), "startup_frag")
+                            .add(R.id.fragmentContainer, new StartupFragment())
                             .commit();
                 }
             }
@@ -120,12 +120,12 @@ public class MainActivity extends AppCompatActivity
         //checks if it is of the type we want to do something with
         if (f instanceof FlightSearchFragment) {
                 mToggle.setDrawerIndicatorEnabled(false);
+                //clearBackStack();
                 super.onBackPressed();
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
-
+        //super.onBackPressed();
         //add code
     }
 
@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_search_history) {
 
         } else if (id == R.id.logout) {
+
             if (findViewById(R.id.fragmentContainer) != null)
             {
                 saveToSharedPrefs(0);
@@ -203,6 +204,18 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    /**
+     * Clears the backstack of fragments when a user has logged out.
+     */
+    private void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
     /**
