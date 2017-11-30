@@ -3,6 +3,7 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.MainUI;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
@@ -72,6 +76,8 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState == null) {
                 if (findViewById(R.id.fragmentContainer) != null) {
                     openDisplayScreen();
+                    userEmail = mPrefs.getString(getString(R.string.USER_EMAIL), "");
+                    Log.d("EMAIL", "mPrefs.email="+userEmail);
                     mToggle.setDrawerIndicatorEnabled(true);
                     if(mToggle.isDrawerIndicatorEnabled())
                     {
@@ -97,7 +103,8 @@ public class MainActivity extends AppCompatActivity
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
 
-
+        View v  = findViewById(R.id.fragmentContainer);
+        //v.setBackgroundColor(Color.rgb(30,144,255));
 
     }
 
@@ -188,6 +195,7 @@ public class MainActivity extends AppCompatActivity
             if (findViewById(R.id.fragmentContainer) != null)
             {
                 saveToSharedPrefs(0);
+                saveToSharedPrefs("");
                 mToggle.setDrawerIndicatorEnabled(false);
                 mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 FragmentManager manager = getSupportFragmentManager();
@@ -240,10 +248,24 @@ public class MainActivity extends AppCompatActivity
         else if(date.isChecked())
             sorting = 1;
         //int sorting = sortingGroup.getCheckedRadioButtonId();
+        String departureDate, returnDate;
+        Button depart_button = findViewById(R.id.button_depart_date);
+        Button return_button = findViewById(R.id.button_return_date);
+        departureDate = depart_button.getText().toString();
+        returnDate = return_button.getText().toString();
+        if(!departureDate.startsWith("Pick")) {
+            departureDate = departureDate.substring(11, 18);
+            Log.d("SEARCH_SUBMIT.DEPART", departureDate);
+            returnDate = returnDate.substring(8, 15);
+            Log.d("SEARCH_SUBMIT.RETURN", returnDate);
+        }
+
         Bundle args = new Bundle();
         args.putSerializable("ORIGIN", origin);
         args.putSerializable("DESTI", destination);
         args.putSerializable("SORT", sorting);
+        args.putSerializable("DEPART", departureDate);
+        args.putSerializable("RETURN", returnDate);
         args.putSerializable("email", userEmail);
 
         listFrag.setArguments(args);
@@ -299,6 +321,13 @@ public class MainActivity extends AppCompatActivity
         saveToSharedPrefs(1);
         mToggle.setDrawerIndicatorEnabled(true);
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, new FlightSearchFragment());
@@ -312,10 +341,16 @@ public class MainActivity extends AppCompatActivity
         mPrefs.edit().putInt(getString(R.string.LOGIN_STATUS), theStatus).apply();
     }
 
+    private void saveToSharedPrefs(String theEmail)
+    {
+        mPrefs.edit().putString(getString(R.string.USER_EMAIL), theEmail).apply();
+    }
+
     @Override
     public void loginFragmentInteraction(Boolean loggedIn, Boolean verified, String verificationCode, String email) {
         userEmail = email;
         if(loggedIn && verified) {
+            saveToSharedPrefs(userEmail);
             openDisplayScreen();
         } else if(!loggedIn && !verified) {
 

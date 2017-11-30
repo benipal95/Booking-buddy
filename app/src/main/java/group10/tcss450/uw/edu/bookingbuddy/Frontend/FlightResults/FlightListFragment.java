@@ -15,6 +15,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.AirlineCodeParser;
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.FlightSearchTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
@@ -32,6 +38,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     private static String origin;
     private static String dest;
     private RecyclerView recyclerView;
+    private String email;
     /**
      * Empty Constructor
      */
@@ -52,8 +59,10 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             origin = getArguments().getString("ORIGIN");
             dest = getArguments().getString("DESTI");
             int sorting = getArguments().getInt("SORT");
+            String departureDate = getArguments().getString("DEPART");
+            String returnDate = getArguments().getString("RETURN");
 
-            String email = getArguments().getString("email");
+            email = getArguments().getString("email");
             AsyncTask<String, Void, String> task = null;
 
 
@@ -67,7 +76,13 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             task = new FlightSearchTask(context, recyclerView, tx_results, sorting, email);
 
             //task.initializeTask(context, recyclerView, tx_results);
-            task.execute(origin, dest);
+            if (departureDate.startsWith("Pick")) {
+                task.execute(origin, dest);
+            }
+            else
+            {
+                task.execute(origin, dest, departureDate, returnDate);
+            }
 
         }
     }
