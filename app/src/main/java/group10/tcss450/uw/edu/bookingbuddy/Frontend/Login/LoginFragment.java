@@ -1,9 +1,11 @@
 package group10.tcss450.uw.edu.bookingbuddy.Frontend.Login;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +72,79 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         final AsyncTask<String, Void, String> loginTask = new GetWebServiceTask();
         if (mListener != null) {
             if(v.equals(loginButton)) {
-                loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
+                String email = loginUsername.getText().toString();
+                String pass = loginPassword.getText().toString();
+                if(email.isEmpty() && pass.isEmpty())
+                {
+                    AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                    buildalert.setMessage("Please enter your email and password.");
+                    buildalert.setCancelable(true);
+                    buildalert.setPositiveButton(
+                            "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = buildalert.create();
+                    alert.show();
+                    loginUsername.setError("Please enter your email");
+                    loginPassword.setError("Please enter your password");
+                }
+                else if (email.isEmpty())
+                {
+                    AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                    buildalert.setMessage("Please enter your email.");
+                    buildalert.setCancelable(true);
+                    buildalert.setPositiveButton(
+                            "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = buildalert.create();
+                    alert.show();
+                    loginUsername.setError("Email missing");
+                }
+                else if(pass.isEmpty())
+                {
+                    AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                    buildalert.setMessage("Please enter your password.");
+                    buildalert.setCancelable(true);
+                    buildalert.setPositiveButton(
+                            "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = buildalert.create();
+                    alert.show();
+                    loginPassword.setError("Password missing");
+                }
+                else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
+                {
+                    AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                    buildalert.setMessage("Please enter a valid email address.");
+                    buildalert.setCancelable(true);
+                    buildalert.setPositiveButton(
+                            "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = buildalert.create();
+                    alert.show();
+                    loginUsername.setError("Not a valid email");
+                }
+                else
+                    loginTask.execute(PARTIAL_URL, loginUsername.getText().toString().toLowerCase(), loginPassword.getText().toString());
 
             } else if(v.equals(forgotPasswordButton)) {
                 mListener.loginFragmentInteraction(false, false, null, null);

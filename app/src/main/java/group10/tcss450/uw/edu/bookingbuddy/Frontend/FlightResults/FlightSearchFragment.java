@@ -3,9 +3,11 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,7 +170,75 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
 
         DialogFragment alert = null;
         if(view.getId() == getActivity().findViewById(R.id.b_submit).getId()) {
-            if (originText.getText().toString().equals(destinationText.getText().toString())) {
+            String originTx = originText.getText().toString();
+            String destTx = destinationText.getText().toString();
+            if(originTx.isEmpty() && destTx.isEmpty())
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Please enter the names of the airports you would like to start from and end at.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert1 = buildalert.create();
+                alert1.show();
+                originText.setError("Please specify a starting airport");
+                destinationText.setError("Please specify a destination airport");
+            }
+            else if(originTx.isEmpty())
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Please enter the name of the airport you would like to start from.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert1 = buildalert.create();
+                alert1.show();
+                originText.setError("Starting airport missing!");
+                //destinationText.setError("Please specify a destination airport");
+            }
+            else if(destTx.isEmpty())
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Please enter the name of the airport you would like to end at.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert1 = buildalert.create();
+                alert1.show();
+                destinationText.setError("Destination airport missing!");
+            }
+            else if (originText.getText().toString().equals(destinationText.getText().toString())) {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Your destination and origin airports are the same. City tours by air are beyond our scope.\n\nSorry.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert1 = buildalert.create();
+                alert1.show();
                 originText.setError("Destination and Origin cannot be the same.");
 
             } else {
