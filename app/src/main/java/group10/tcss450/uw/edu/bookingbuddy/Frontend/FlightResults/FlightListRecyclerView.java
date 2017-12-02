@@ -2,6 +2,7 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,9 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
         holder.mDestination.setText(hashData.get("destination"));*/
 
         Flights flight = mValues.get(position);
+        if(flight.isFlightSaved()) {
+            holder.saveFlightButton.setVisibility(View.INVISIBLE);
+        }
         if(flight.getFormatType() == 0)
         {
             holder.mDepartDate.setText(flight.getNiceDepartDate());
@@ -131,7 +135,6 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
             mOrigin = itemView.findViewById(R.id.flight_origin);
             mDestination = itemView.findViewById(R.id.flight_dest);
             saveFlightButton = itemView.findViewById(R.id.save_flight_button);
-
             saveFlightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -27,6 +27,7 @@ public class Flights implements Comparable<Flights>
     private String mRawDeptDate;
     private String mRawPrice;
 
+    private boolean saved;
     /**
      * sortBy is used to change up how the compareTo implementation will work.
      * This is to allow for different ways to sort flights by using the same function.
@@ -78,6 +79,22 @@ public class Flights implements Comparable<Flights>
         mReturnDate = Long.parseLong(tmp);
 
         mValue = Double.parseDouble(theValue);
+    }
+
+    /**
+     * Returns if a flight has been saved or not.
+     * @return a flights saved status.
+     */
+    public boolean isFlightSaved() {
+        return saved;
+    }
+
+    /**
+     * Sets the flight as saved.
+     */
+    public void setSaved() {
+        saved =true;
+
     }
 
     /**

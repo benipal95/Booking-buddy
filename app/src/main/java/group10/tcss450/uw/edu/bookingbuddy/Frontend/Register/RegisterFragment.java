@@ -182,63 +182,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 task = new PostWebServiceTask();
                 task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
             }
-               /* if(registerPassword.getText().toString().equals(registerComfirmPasword.getText().toString())) {
-                    if(registerPassword.getText().toString().length() > 5) {
-                        task = new PostWebServiceTask();
-                        task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
-                    } else {
-                        AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
-                        buildalert.setMessage("Your password is too weak. Please enter a new password of at least 6 characters.");
-                        buildalert.setCancelable(true);
-                        buildalert.setPositiveButton(
-                                "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                        AlertDialog alert = buildalert.create();
-                        alert.show();
-                        //registerUsername.setError("Please enter an email");
-                        registerPassword.setError("Password too weak");
-                        registerComfirmPasword.setError("Password too weak");
-                    }
-
-
-                } else {
-                    AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
-                    buildalert.setMessage("Your password does not match what you entered in the confirmation field. Please retype them and try again.");
-                    buildalert.setCancelable(true);
-                    buildalert.setPositiveButton(
-                            "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert = buildalert.create();
-                    alert.show();
-                    registerPassword.setError("Passwords Not Matching");
-                    registerComfirmPasword.setError("Passwords Not Matching");
-                }
-            } else {
-                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
-                buildalert.setMessage("The email address you entered does not look like a valid email address to us.");
-                buildalert.setCancelable(true);
-                buildalert.setPositiveButton(
-                        "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                AlertDialog alert = buildalert.create();
-                alert.show();
-                registerUsername.setError("Must be a valid email.");
-            }*/
 
         }
     }

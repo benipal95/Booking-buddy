@@ -87,6 +87,7 @@ public class GetSavedFlightsTask extends AsyncTask<String, Void, String> {
                 String delim = ",";
                 String[] values = arr[i].split(delim);
                 Flights flight = new Flights(values[2], values[3], values[4], values[0], Integer.parseInt(values[1]), values[0]);
+                flight.setSaved();
                 savedFlights.add(flight);
             }
 
