@@ -97,10 +97,21 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         String theDest = strings[1];
         String departureDate = null;
         String returnDate = null;
-        if(strings.length > 2)
+        String airlineFilter = null;
+        if(strings.length == 4)
         {
             departureDate = strings[2];
             returnDate = strings[3];
+        }
+        else if(strings.length == 3)
+        {
+            airlineFilter = strings[2];
+        }
+        else if(strings.length == 5)
+        {
+            departureDate = strings[2];
+            returnDate = strings[3];
+            airlineFilter = strings[4];
         }
 
         try {
@@ -185,7 +196,14 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
 
                     //add hashmap back to the HashMap ArrayList
                     flight.setSortBy(mSortOption);
-                    dataJSON.add(flight);
+                    if(airlineFilter != null)
+                    {
+                        String comparison = flight.getNiceAirline();
+                        if(comparison.contains(airlineFilter))
+                            dataJSON.add(flight);
+                    }
+                    else
+                        dataJSON.add(flight);
 
                 }
 
@@ -214,7 +232,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         //RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         Log.d("FlightSearchTask", result);
-        if(result.length() < 3)
+        if(dataJSON.isEmpty())
         {
             result = "Sorry, no results were found.";
             AlertDialog.Builder buildalert = new AlertDialog.Builder(mContext);

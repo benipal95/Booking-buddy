@@ -61,7 +61,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             int sorting = getArguments().getInt("SORT");
             String departureDate = getArguments().getString("DEPART");
             String returnDate = getArguments().getString("RETURN");
-
+            String filter = getArguments().getString("FILTER");
             email = getArguments().getString("email");
             AsyncTask<String, Void, String> task = null;
 
@@ -78,11 +78,17 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
 
             //task.initializeTask(context, recyclerView, tx_results);
             if (departureDate.startsWith("Pick")) {
-                task.execute(origin, dest);
+                if(filter == null)
+                    task.execute(origin, dest);
+                else
+                    task.execute(origin, dest, filter);
             }
             else
             {
-                task.execute(origin, dest, departureDate, returnDate);
+                if(filter == null)
+                    task.execute(origin, dest, departureDate, returnDate);
+                else
+                    task.execute(origin, dest, departureDate, returnDate, filter);
             }
 
         }

@@ -287,6 +287,51 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSearchSubmit(String origin, String destination, String airlineFilter) {
+        FlightListFragment listFrag = new FlightListFragment();
+        RadioButton fare = findViewById(R.id.rb_fare_sort);
+        RadioButton date = findViewById(R.id.rb_date_sort);
+        int sorting = 0;
+
+        /*
+         * In order to determine the sorting method, you'll need to do checks on
+         * which radio button got checked.
+         */
+        if(fare.isChecked())
+            sorting = 0;
+        else if(date.isChecked())
+            sorting = 1;
+        //int sorting = sortingGroup.getCheckedRadioButtonId();
+        String departureDate, returnDate;
+        Button depart_button = findViewById(R.id.button_depart_date);
+        Button return_button = findViewById(R.id.button_return_date);
+        departureDate = depart_button.getText().toString();
+        returnDate = return_button.getText().toString();
+        if(!departureDate.startsWith("Pick")) {
+            departureDate = departureDate.substring(11, 18);
+            Log.d("SEARCH_SUBMIT.DEPART", departureDate);
+            returnDate = returnDate.substring(8, 15);
+            Log.d("SEARCH_SUBMIT.RETURN", returnDate);
+        }
+
+        Bundle args = new Bundle();
+        args.putSerializable("ORIGIN", origin);
+        args.putSerializable("DESTI", destination);
+        args.putSerializable("SORT", sorting);
+        args.putSerializable("DEPART", departureDate);
+        args.putSerializable("RETURN", returnDate);
+        args.putSerializable("FILTER", airlineFilter);
+        args.putSerializable("email", userEmail);
+
+        listFrag.setArguments(args);
+        android.support.v4.app.FragmentTransaction trans = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, listFrag)
+                .addToBackStack(null);
+        trans.commit();
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
