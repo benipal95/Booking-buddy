@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     private AutoCompleteTextView originText;
     private OnSearchSubmitListener mListener;
     private String usersEmail;
+    ArrayList<String> mAirlineCodes;
 
     /**
      * Empty constructor.
@@ -61,6 +64,13 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        AirlineCodeParser air_parse = new AirlineCodeParser(getContext());
+        try {
+            mAirlineCodes = air_parse.parseAirlineJSON_AsList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         View theview = inflater.inflate(R.layout.fragment_flight_search, container, false);
         Button thebutton = (Button) theview.findViewById(R.id.b_submit);
         thebutton.setOnClickListener(this);
@@ -68,6 +78,24 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         Button returnButton = theview.findViewById(R.id.button_return_date);
         departButton.setOnClickListener(this);
         returnButton.setOnClickListener(this);
+        CheckBox airlineFilter = theview.findViewById(R.id.cb_filter_airline);
+        airlineFilter.setOnClickListener(this);
+
+        AutoCompleteTextView spinner = theview.findViewById(R.id.spinner);
+
+        List<String> spinnerArray =  new ArrayList<String>();
+
+        for(int i = 0; i < mAirlineCodes.size(); i++)
+        {
+            spinnerArray.add(mAirlineCodes.get(i));
+        }
+        //spinnerArray.add("item1");
+        //spinnerArray.add("item2");
+
+        ArrayAdapter<String> airlineArray = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
+
+        spinner.setAdapter(airlineArray);
+
         Bundle args = getArguments();
 
        // destLocation.setAdapter(adapter);
@@ -144,9 +172,14 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
                 originText.setError("Destination and Origin cannot be the same.");
 
             } else {
-
-
-                mListener.onSearchSubmit(airportCodes.get(originText.getText().toString()), airportCodes.get(destinationText.getText().toString()));
+                CheckBox checker = getActivity().findViewById(R.id.cb_filter_airline);
+                AutoCompleteTextView filter = getActivity().findViewById(R.id.spinner);
+                if(checker.isChecked() && !filter.getText().toString().isEmpty())
+                    mListener.onSearchSubmit(airportCodes.get(originText.getText().toString()), airportCodes.get(destinationText.getText().toString()), filter.getText().toString());
+                else if(checker.isChecked() && !filter.getText().toString().isEmpty())
+                    filter.setError("Please enter an airline name to filter by.");
+                else
+                    mListener.onSearchSubmit(airportCodes.get(originText.getText().toString()), airportCodes.get(destinationText.getText().toString()));
             }
         } else if(view.getId() == getActivity().findViewById(R.id.button_depart_date).getId()) {
 
@@ -155,6 +188,22 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
         } else if(view.getId() == getActivity().findViewById(R.id.button_return_date).getId()) {
 
             alert = new ReturnDatePickerFragment();
+        }
+        else if(view.getId() == getActivity().findViewById(R.id.cb_filter_airline).getId())
+        {
+            CheckBox checker = getActivity().findViewById(R.id.cb_filter_airline);
+
+            if(checker.isChecked())
+            {
+                AutoCompleteTextView spin = getActivity().findViewById(R.id.spinner);
+                spin.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                AutoCompleteTextView spin = getActivity().findViewById(R.id.spinner);
+                spin.setText("");
+                spin.setVisibility(View.GONE);
+            }
         }
 
         if(alert != null) {
@@ -175,6 +224,7 @@ public class FlightSearchFragment extends Fragment implements View.OnClickListen
          * @param destination The destination IATA code.
          */
         void onSearchSubmit(String origin, String destination);
+        void onSearchSubmit(String origin, String destination, String airlineFilter);
     }
 
     public static class DepartureDatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
