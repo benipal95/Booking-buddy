@@ -79,6 +79,7 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     /**

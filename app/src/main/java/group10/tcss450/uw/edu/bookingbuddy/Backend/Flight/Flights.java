@@ -23,6 +23,10 @@ public class Flights implements Comparable<Flights>
     private final int mFormatType;
     private String mTrueName;
 
+    private String mRawRetDate;
+    private String mRawDeptDate;
+    private String mRawPrice;
+
     /**
      * sortBy is used to change up how the compareTo implementation will work.
      * This is to allow for different ways to sort flights by using the same function.
@@ -52,6 +56,9 @@ public class Flights implements Comparable<Flights>
         mFlightNumber = theFlightNumber;
         mNiceDepartDate = theDepartDate;
         mNiceReturnDate = theReturnDate;
+        mRawPrice = theValue;
+        mRawDeptDate = theDepartDate;
+        mRawRetDate = theReturnDate;
         sortBy = 0;
         mFormatType = 1;
     }
@@ -92,6 +99,18 @@ public class Flights implements Comparable<Flights>
         }
     }
 
+
+    public String getFormattedRawDepartDate() {
+        return mRawDeptDate;
+    }
+
+    public String getFormattedRawReturnDate() {
+        return mRawRetDate;
+    }
+
+    public String getFormattedRawPrice() {
+        return mRawPrice;
+    }
     /**
      * Outputs raw, unformatted date integer representing the departure date.
      * Suitable for internal backend use.

@@ -49,13 +49,13 @@ public class AirlineCodeParser
                 JSONObject d = data.getJSONObject(i);
                 String key = d.toString();
                 key = key.substring(2, key.indexOf('\"', 3));
-                Log.d("AIRLINE_CODE_PARSE", key);
+             //   Log.d("AIRLINE_CODE_PARSE", key);
                 // add values to Strings for hashmap
                 String test = d.toString();
                 if(test.contains("\"IATA\"")) {
                     String iata = d.getString("IATA");
                     String name = d.getString("name");
-                    Log.d("AIRLINE_CODE_PARSE", iata + ", " + name);
+                 //   Log.d("AIRLINE_CODE_PARSE", iata + ", " + name);
 
 
                     // add strings to hashmap

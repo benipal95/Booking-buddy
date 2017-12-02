@@ -66,7 +66,8 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             AsyncTask<String, Void, String> task = null;
 
 
-            recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
+            recyclerView =  getActivity().findViewById(R.id.result_list);
+
 
             TextView tx_results = getActivity().findViewById(R.id.tx_flight_list);
             Context context = getContext();

@@ -2,20 +2,17 @@ package group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.Flights;
-import group10.tcss450.uw.edu.bookingbuddy.Backend.User.SaveFlightTask;
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.SaveFlightTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 
@@ -134,14 +131,19 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
             mOrigin = itemView.findViewById(R.id.flight_origin);
             mDestination = itemView.findViewById(R.id.flight_dest);
             saveFlightButton = itemView.findViewById(R.id.save_flight_button);
+
             saveFlightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String origin = mOrigin.getText().toString();
-                    String dest = mDestination.getText().toString();
-                    String dept = mDepartDate.getText().toString();
-                    String ret_date = mReturnDate.getText().toString();
-                    String price = mValue.getText().toString();
+                    final int position = (int) saveFlightButton.getTag();
+                    Flights flight = mValues.get(position);
+                    String origin = flight.getRawAirline();
+                    String dest = ""+ flight.getRawFlightNo();
+                    String dept =""+ flight.getFormattedRawDepartDate();
+                    String ret_date = ""+ flight.getFormattedRawReturnDate();
+                    String price =""+ flight.getFormattedRawPrice();
+
+
                     SaveFlightTask saveFlight = new SaveFlightTask();
                     saveFlight.execute(userEmail,origin,dest,dept,ret_date,price);
                     saveFlightButton.setEnabled(false);

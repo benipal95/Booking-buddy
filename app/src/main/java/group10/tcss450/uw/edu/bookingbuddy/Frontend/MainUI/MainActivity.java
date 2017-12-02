@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.GetSavedFlightsTask;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.GraphFragment;
@@ -32,6 +33,7 @@ import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.VerifyEmailFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.EnterNewPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ForgotPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ResetPasswordFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.SavedFlights.SavedFlightsFragment;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,
         StartupFragment.splashFragmentInteractionListener, LoginFragment.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
         RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener, ResetPasswordFragment.resetFragmentInteractionListener,EnterNewPasswordFragment.EnterNewPasswordFragmentInteractionListener,
-        VerifyEmailFragment.VerifyEmailFragmentInteractionListener{
+        VerifyEmailFragment.VerifyEmailFragmentInteractionListener, SavedFlightsFragment.SavedFlightsFragmentListener{
 
     ActionBarDrawerToggle mToggle;
     DrawerLayout mDrawer;
@@ -188,6 +190,16 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (id == R.id.nav_load_pinned_flights) {
 
+            if (findViewById(R.id.fragmentContainer) != null)
+            {
+                SavedFlightsFragment savedFlights = new SavedFlightsFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("email", userEmail);
+                savedFlights.setArguments(args);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, savedFlights).addToBackStack(null)
+                        .commit();
+            }
         } else if (id == R.id.nav_search_history) {
 
         } else if (id == R.id.logout) {
@@ -255,9 +267,7 @@ public class MainActivity extends AppCompatActivity
         returnDate = return_button.getText().toString();
         if(!departureDate.startsWith("Pick")) {
             departureDate = departureDate.substring(11, 18);
-            Log.d("SEARCH_SUBMIT.DEPART", departureDate);
             returnDate = returnDate.substring(8, 15);
-            Log.d("SEARCH_SUBMIT.RETURN", returnDate);
         }
 
         Bundle args = new Bundle();
@@ -455,4 +465,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void SavedFlightsFragmentInteraction(Uri uri) {
+
+    }
 }
