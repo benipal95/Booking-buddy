@@ -182,7 +182,6 @@ public class FlightSearchTask extends AsyncTask<String, Void, String>
         Log.d("FlightSearchTask", result);
         if(result.length() < 3)
         {
-            result = "Sorry, no results were found.";
             AlertDialog.Builder buildalert = new AlertDialog.Builder(mContext);
             buildalert.setMessage("Sorry, no results were found.");
             buildalert.setCancelable(true);
