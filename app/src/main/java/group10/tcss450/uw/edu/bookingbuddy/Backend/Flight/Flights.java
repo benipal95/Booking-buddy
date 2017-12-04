@@ -1,6 +1,9 @@
 package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+
+import java.util.HashMap;
 
 /**
  * Created by jjtowers on 11/21/2017.
@@ -18,7 +21,13 @@ public class Flights implements Comparable<Flights>
     private String mAirline;
     private int mFlightNumber;
     private final int mFormatType;
+    private String mTrueName;
 
+    private String mRawRetDate;
+    private String mRawDeptDate;
+    private String mRawPrice;
+
+    private boolean saved;
     /**
      * sortBy is used to change up how the compareTo implementation will work.
      * This is to allow for different ways to sort flights by using the same function.
@@ -40,13 +49,17 @@ public class Flights implements Comparable<Flights>
         mFormatType = 0;
     }
 
-    public Flights(String theDepartDate, String theReturnDate, String theValue, String theAirline, int theFlightNumber)
+    public Flights(String theDepartDate, String theReturnDate, String theValue, String theAirline, int theFlightNumber, String theTrueName)
     {
         initializationHelper(theReturnDate, theDepartDate, theValue);
         mAirline = theAirline;
+        mTrueName = theTrueName;
         mFlightNumber = theFlightNumber;
         mNiceDepartDate = theDepartDate;
         mNiceReturnDate = theReturnDate;
+        mRawPrice = theValue;
+        mRawDeptDate = theDepartDate;
+        mRawRetDate = theReturnDate;
         sortBy = 0;
         mFormatType = 1;
     }
@@ -69,6 +82,22 @@ public class Flights implements Comparable<Flights>
     }
 
     /**
+     * Returns if a flight has been saved or not.
+     * @return a flights saved status.
+     */
+    public boolean isFlightSaved() {
+        return saved;
+    }
+
+    /**
+     * Sets the flight as saved.
+     */
+    public void setSaved(Boolean status) {
+        saved =status;
+
+    }
+
+    /**
      * This changes the flag that sets how compareTo is run. It is intended for use with sorting
      * algorithms. Will throw an IllegalArgumentException if the value you attempt to set the
      * flag to is not recognized.
@@ -87,6 +116,18 @@ public class Flights implements Comparable<Flights>
         }
     }
 
+
+    public String getFormattedRawDepartDate() {
+        return mRawDeptDate;
+    }
+
+    public String getFormattedRawReturnDate() {
+        return mRawRetDate;
+    }
+
+    public String getFormattedRawPrice() {
+        return mRawPrice;
+    }
     /**
      * Outputs raw, unformatted date integer representing the departure date.
      * Suitable for internal backend use.
@@ -169,7 +210,10 @@ public class Flights implements Comparable<Flights>
 
     public String getNiceAirline()
     {
-        return "Airline Code: " + mAirline;
+        if (mTrueName != null)
+            return "Airline: " + mTrueName;
+        else
+            return "Airline Code: " + mAirline;
     }
 
     public String getRawAirline()

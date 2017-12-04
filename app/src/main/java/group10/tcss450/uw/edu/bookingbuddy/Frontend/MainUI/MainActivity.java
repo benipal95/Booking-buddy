@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.GetSavedFlightsTask;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightListFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.FlightSearchFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.FlightResults.GraphFragment;
@@ -32,6 +33,7 @@ import group10.tcss450.uw.edu.bookingbuddy.Frontend.Login.VerifyEmailFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.EnterNewPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ForgotPasswordFragment;
 import group10.tcss450.uw.edu.bookingbuddy.Frontend.PasswordReset.ResetPasswordFragment;
+import group10.tcss450.uw.edu.bookingbuddy.Frontend.SavedFlights.SavedFlightsFragment;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 /**
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FlightSearchFragment.OnSearchSubmitListener, FlightListFragment.OnFragmentInteractionListener,
         StartupFragment.splashFragmentInteractionListener, LoginFragment.loginFragmentInteractionListener, FlightListFragment.OnGraphInteractionListener,
         RegisterFragment.registerFragmentInteractionListener, ForgotPasswordFragment.forgotPasswordInteractionListener, ResetPasswordFragment.resetFragmentInteractionListener,EnterNewPasswordFragment.EnterNewPasswordFragmentInteractionListener,
-        VerifyEmailFragment.VerifyEmailFragmentInteractionListener{
+        VerifyEmailFragment.VerifyEmailFragmentInteractionListener, SavedFlightsFragment.SavedFlightsFragmentListener{
 
     ActionBarDrawerToggle mToggle;
     DrawerLayout mDrawer;
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState == null) {
                 if (findViewById(R.id.fragmentContainer) != null) {
                     getSupportFragmentManager().beginTransaction()
-                            .add(R.id.fragmentContainer, new StartupFragment(), "startup_frag")
+                            .add(R.id.fragmentContainer, new StartupFragment())
                             .commit();
                 }
             }
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         View v  = findViewById(R.id.fragmentContainer);
-        v.setBackgroundColor(Color.rgb(30,144,255));
+        //v.setBackgroundColor(Color.rgb(30,144,255));
 
     }
 
@@ -127,12 +129,12 @@ public class MainActivity extends AppCompatActivity
         //checks if it is of the type we want to do something with
         if (f instanceof FlightSearchFragment) {
                 mToggle.setDrawerIndicatorEnabled(false);
+                //clearBackStack();
                 super.onBackPressed();
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
-
+        //super.onBackPressed();
         //add code
     }
 
@@ -188,9 +190,20 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (id == R.id.nav_load_pinned_flights) {
 
+            if (findViewById(R.id.fragmentContainer) != null)
+            {
+                SavedFlightsFragment savedFlights = new SavedFlightsFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("email", userEmail);
+                savedFlights.setArguments(args);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, savedFlights).addToBackStack(null)
+                        .commit();
+            }
         } else if (id == R.id.nav_search_history) {
 
         } else if (id == R.id.logout) {
+
             if (findViewById(R.id.fragmentContainer) != null)
             {
                 saveToSharedPrefs(0);
@@ -213,6 +226,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
+    /**
+     * Clears the backstack of fragments when a user has logged out.
+     */
+    private void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
     /**
      * Defines the behavior for when the search button is pressed.
      * @param origin
@@ -221,6 +246,48 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSearchSubmit(String origin, String destination) {
 
+        FlightListFragment listFrag = new FlightListFragment();
+        RadioButton fare = findViewById(R.id.rb_fare_sort);
+        RadioButton date = findViewById(R.id.rb_date_sort);
+        int sorting = 0;
+
+        /*
+         * In order to determine the sorting method, you'll need to do checks on
+         * which radio button got checked.
+         */
+        if(fare.isChecked())
+            sorting = 0;
+        else if(date.isChecked())
+            sorting = 1;
+        //int sorting = sortingGroup.getCheckedRadioButtonId();
+        String departureDate, returnDate;
+        Button depart_button = findViewById(R.id.button_depart_date);
+        Button return_button = findViewById(R.id.button_return_date);
+        departureDate = depart_button.getText().toString();
+        returnDate = return_button.getText().toString();
+        if(!departureDate.startsWith("Pick")) {
+            departureDate = departureDate.substring(11, 18);
+            returnDate = returnDate.substring(8, 15);
+        }
+
+        Bundle args = new Bundle();
+        args.putSerializable("ORIGIN", origin);
+        args.putSerializable("DESTI", destination);
+        args.putSerializable("SORT", sorting);
+        args.putSerializable("DEPART", departureDate);
+        args.putSerializable("RETURN", returnDate);
+        args.putSerializable("email", userEmail);
+
+        listFrag.setArguments(args);
+        android.support.v4.app.FragmentTransaction trans = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, listFrag)
+                .addToBackStack(null);
+        trans.commit();
+    }
+
+    @Override
+    public void onSearchSubmit(String origin, String destination, String airlineFilter) {
         FlightListFragment listFrag = new FlightListFragment();
         RadioButton fare = findViewById(R.id.rb_fare_sort);
         RadioButton date = findViewById(R.id.rb_date_sort);
@@ -253,6 +320,7 @@ public class MainActivity extends AppCompatActivity
         args.putSerializable("SORT", sorting);
         args.putSerializable("DEPART", departureDate);
         args.putSerializable("RETURN", returnDate);
+        args.putSerializable("FILTER", airlineFilter);
         args.putSerializable("email", userEmail);
 
         listFrag.setArguments(args);
@@ -442,4 +510,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void SavedFlightsFragmentInteraction(Uri uri) {
+
+    }
 }

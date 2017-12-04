@@ -15,6 +15,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.AirlineCodeParser;
 import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.FlightSearchTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
@@ -55,12 +61,13 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             int sorting = getArguments().getInt("SORT");
             String departureDate = getArguments().getString("DEPART");
             String returnDate = getArguments().getString("RETURN");
-
+            String filter = getArguments().getString("FILTER");
             email = getArguments().getString("email");
             AsyncTask<String, Void, String> task = null;
 
 
-            recyclerView = (RecyclerView) getActivity().findViewById(R.id.result_list);
+            recyclerView =  getActivity().findViewById(R.id.result_list);
+
 
             TextView tx_results = getActivity().findViewById(R.id.tx_flight_list);
             Context context = getContext();
@@ -70,12 +77,18 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             task = new FlightSearchTask(context, recyclerView, tx_results, sorting, email);
 
             //task.initializeTask(context, recyclerView, tx_results);
-            if (departureDate.startsWith("Tap to Set")) {
-                task.execute(origin, dest);
+            if (departureDate.startsWith("Pick")) {
+                if(filter == null)
+                    task.execute(origin, dest);
+                else
+                    task.execute(origin, dest, filter);
             }
             else
             {
-                task.execute(origin, dest, departureDate, returnDate);
+                if(filter == null)
+                    task.execute(origin, dest, departureDate, returnDate);
+                else
+                    task.execute(origin, dest, departureDate, returnDate, filter);
             }
 
         }

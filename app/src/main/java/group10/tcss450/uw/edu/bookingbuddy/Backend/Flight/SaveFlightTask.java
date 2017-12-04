@@ -1,4 +1,4 @@
-package group10.tcss450.uw.edu.bookingbuddy.Backend.User;
+package group10.tcss450.uw.edu.bookingbuddy.Backend.Flight;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -91,6 +91,7 @@ public class SaveFlightTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d("result", result);
+
 
     }
 }

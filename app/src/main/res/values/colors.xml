@@ -16,6 +16,8 @@
     <color name="ccolorAccent">#FF4081</color>
     <color name="year">#999999</color>
     <color name="title">#222222</color>
+    <color name="primary_material_dark">#0e497b</color>
+    <color name="accent_material_dark">#60b0f4</color>
 
     <drawable name="screen_background_dark_transparent">#80000000</drawable>
 </resources>

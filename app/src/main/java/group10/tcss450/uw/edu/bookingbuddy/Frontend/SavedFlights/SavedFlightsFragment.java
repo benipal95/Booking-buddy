@@ -4,10 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.FlightSearchTask;
+import group10.tcss450.uw.edu.bookingbuddy.Backend.Flight.GetSavedFlightsTask;
 import group10.tcss450.uw.edu.bookingbuddy.R;
 
 
@@ -15,26 +20,12 @@ public class SavedFlightsFragment extends Fragment {
 
 
     private SavedFlightsFragmentListener mListener;
-
+    private RecyclerView recyclerView;
+    private String email;
     public SavedFlightsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SavedFlightsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SavedFlightsFragment newInstance(String param1, String param2) {
-        SavedFlightsFragment fragment = new SavedFlightsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,13 +33,23 @@ public class SavedFlightsFragment extends Fragment {
         if (getArguments() != null) {
 
         }
+        Bundle args = getArguments();
+        email = (String) args.get("email");
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        recyclerView =  getActivity().findViewById(R.id.saved_result_list);
+        GetSavedFlightsTask task = new GetSavedFlightsTask(recyclerView, getContext());
+        task.execute(email);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_saved_flights, container, false);
+        return inflater.inflate(R.layout.fragment_flight_saved_list, container, false);
     }
 
 

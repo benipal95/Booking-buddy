@@ -1,9 +1,11 @@
 package group10.tcss450.uw.edu.bookingbuddy.Frontend.Register;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,23 +62,125 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         if (mListener != null) {
             AsyncTask<String, Void, String> task = null;
             String emailAddress = registerUsername.getText().toString();
-            if(android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
+            String password = registerPassword.getText().toString();
+            String confirmation = registerComfirmPasword.getText().toString();
+            if (emailAddress.isEmpty() && password.isEmpty() && confirmation.isEmpty())
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Please enter a valid email address and a password of at least 6 characters.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
-                if(registerPassword.getText().toString().equals(registerComfirmPasword.getText().toString())) {
-                    if(registerPassword.getText().toString().length() > 5) {
-                        task = new PostWebServiceTask();
-                        task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
-                    } else {
-                        Toast toast = Toast.makeText(getContext(), "Password to short/weak please try again", Toast.LENGTH_LONG);
-                        toast.show();
-                    }
+                AlertDialog alert = buildalert.create();
+                alert.show();
+                registerUsername.setError("Please enter an email");
+                registerPassword.setError("Please enter a password");
+                registerComfirmPasword.setError("Please reenter the password");
+            }
+            else if (password.isEmpty() && confirmation.isEmpty())
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Please enter a password of at least 6 characters, and retype it in the confirmation field.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
+                AlertDialog alert = buildalert.create();
+                alert.show();
+                //registerUsername.setError("Please enter an email");
+                registerPassword.setError("Password missing");
+                registerComfirmPasword.setError("Password confirmation missing");
+            }
+            else if (password.isEmpty() || confirmation.isEmpty())
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("You are missing either a password or password confirmation. Please recheck and try again.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
-                } else {
-                    registerPassword.setError("Passwords Not Matching");
-                }
-            } else {
+                AlertDialog alert = buildalert.create();
+                alert.show();
+                //registerUsername.setError("Please enter an email");
+                if(password.isEmpty())
+                    registerPassword.setError("Password missing");
+                if(confirmation.isEmpty())
+                    registerComfirmPasword.setError("Password confirmation missing");
+            }
+            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("The email address you entered does not look like a valid email address to us.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = buildalert.create();
+                alert.show();
                 registerUsername.setError("Must be a valid email.");
+
+            }
+            else if(!registerPassword.getText().toString().equals(registerComfirmPasword.getText().toString()))
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Your password does not match what you entered in the confirmation field. Please retype them and try again.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = buildalert.create();
+                alert.show();
+                registerPassword.setError("Passwords Not Matching");
+                registerComfirmPasword.setError("Passwords Not Matching");
+            }
+            else if(registerPassword.getText().toString().length() < 6)
+            {
+                AlertDialog.Builder buildalert = new AlertDialog.Builder(getContext());
+                buildalert.setMessage("Your password is too weak. Please enter a new password of at least 6 characters.");
+                buildalert.setCancelable(true);
+                buildalert.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = buildalert.create();
+                alert.show();
+                //registerUsername.setError("Please enter an email");
+                registerPassword.setError("Password too weak");
+                registerComfirmPasword.setError("Password too weak");
+            }
+            else
+            {
+                task = new PostWebServiceTask();
+                task.execute(PARTIAL_URL, registerUsername.getText().toString().toLowerCase(), registerPassword.getText().toString());
             }
 
         }
