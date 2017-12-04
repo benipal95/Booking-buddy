@@ -5,9 +5,7 @@
     android:id="@+id/flight_card"
     android:layout_width="390dp"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="2dp"
-    card_view:cardPreventCornerOverlap="false">
+>
     <RelativeLayout
         android:layout_width="320dp"
         android:layout_height="wrap_content"

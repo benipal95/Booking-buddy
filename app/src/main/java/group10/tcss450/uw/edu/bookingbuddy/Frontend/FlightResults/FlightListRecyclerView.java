@@ -73,7 +73,7 @@ public class FlightListRecyclerView extends RecyclerView.Adapter<FlightListRecyc
 
         final Flights flight = mValues.get(position);
         if(flight.isFlightSaved()) {
-            holder.saveFlightButton.setText("Delte Flight");
+            holder.saveFlightButton.setText("Delete Flight");
             holder.saveFlightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
